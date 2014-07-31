@@ -1,0 +1,215 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (c4d12660).
+//
+// e:\workspace\土鳖pvp宏\hook\hook\release\allpurauthentic.tli
+//
+// Wrapper implementations for Win32 type library res\AllpurAuthentic.dll
+// compiler-generated file created 07/31/14 at 00:33:32 - DO NOT EDIT!
+
+#pragma once
+
+//
+// dispinterface _ICurrencyAuthEvents wrapper method implementations
+//
+
+inline HRESULT _ICurrencyAuthEvents::OnUpdate ( ) {
+    return _com_dispatch_method(this, 0x1, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT _ICurrencyAuthEvents::OnInvalid ( ) {
+    return _com_dispatch_method(this, 0x2, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT _ICurrencyAuthEvents::OnBulletin ( _bstr_t content ) {
+    return _com_dispatch_method(this, 0x3, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)content);
+}
+
+//
+// interface ICurrencyAuth wrapper method implementations
+//
+
+inline HRESULT ICurrencyAuth::Initialize ( ) {
+    HRESULT _hr = raw_Initialize();
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline int ICurrencyAuth::Auth ( _bstr_t product, _bstr_t serial ) {
+    int _result = 0;
+    HRESULT _hr = raw_Auth(product, serial, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::UserAuth ( _bstr_t product, _bstr_t user, _bstr_t pwd ) {
+    int _result = 0;
+    HRESULT _hr = raw_UserAuth(product, user, pwd, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline _bstr_t ICurrencyAuth::Encrypt ( unsigned char type, _bstr_t src, _bstr_t key ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_Encrypt(type, src, key, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline _bstr_t ICurrencyAuth::Decrypt ( unsigned char type, _bstr_t src, _bstr_t key ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_Decrypt(type, src, key, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline _bstr_t ICurrencyAuth::GetCode ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_GetCode(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline HRESULT ICurrencyAuth::Update ( ) {
+    HRESULT _hr = raw_Update();
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}
+
+inline _bstr_t ICurrencyAuth::GetBulletin ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_GetBulletin(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline VARIANT_BOOL ICurrencyAuth::IsValid ( ) {
+    VARIANT_BOOL _result = 0;
+    HRESULT _hr = raw_IsValid(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline _bstr_t ICurrencyAuth::GetValidity ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_GetValidity(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline short ICurrencyAuth::DeductPoint ( short point ) {
+    short _result = 0;
+    HRESULT _hr = raw_DeductPoint(point, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline unsigned short ICurrencyAuth::GetProductDataSize ( ) {
+    unsigned short _result = 0;
+    HRESULT _hr = raw_GetProductDataSize(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline unsigned char ICurrencyAuth::GetProductData ( unsigned short pos ) {
+    unsigned char _result = 0;
+    HRESULT _hr = raw_GetProductData(pos, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline unsigned char ICurrencyAuth::GetData ( unsigned char pos ) {
+    unsigned char _result = 0;
+    HRESULT _hr = raw_GetData(pos, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::PutData ( _bstr_t data ) {
+    int _result = 0;
+    HRESULT _hr = raw_PutData(data, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline unsigned char ICurrencyAuth::GetUserType ( ) {
+    unsigned char _result = 0;
+    HRESULT _hr = raw_GetUserType(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline _bstr_t ICurrencyAuth::GetVersion ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_GetVersion(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline int ICurrencyAuth::Unbind ( ) {
+    int _result = 0;
+    HRESULT _hr = raw_Unbind(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::AddTime ( _bstr_t product, _bstr_t card, _bstr_t buyer, short * days, short * point ) {
+    int _result = 0;
+    HRESULT _hr = raw_AddTime(product, card, buyer, days, point, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::UserRegister ( _bstr_t product, _bstr_t user, _bstr_t pwd, unsigned char type, unsigned char bind, short point ) {
+    int _result = 0;
+    HRESULT _hr = raw_UserRegister(product, user, pwd, type, bind, point, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::ChangePassword ( _bstr_t Old, _bstr_t New ) {
+    int _result = 0;
+    HRESULT _hr = raw_ChangePassword(Old, New, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline VARIANT_BOOL ICurrencyAuth::IsConnected ( ) {
+    VARIANT_BOOL _result = 0;
+    HRESULT _hr = raw_IsConnected(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline _bstr_t ICurrencyAuth::GetCurrTime ( ) {
+    BSTR _result = 0;
+    HRESULT _hr = raw_GetCurrTime(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _bstr_t(_result, false);
+}
+
+inline int ICurrencyAuth::DeductHour ( unsigned long hour ) {
+    int _result = 0;
+    HRESULT _hr = raw_DeductHour(hour, &_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::GetTotalLen ( ) {
+    int _result = 0;
+    HRESULT _hr = raw_GetTotalLen(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline int ICurrencyAuth::GetDownloadLen ( ) {
+    int _result = 0;
+    HRESULT _hr = raw_GetDownloadLen(&_result);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _result;
+}
+
+inline HRESULT ICurrencyAuth::LeaveMsg ( unsigned char type, _bstr_t msg ) {
+    HRESULT _hr = raw_LeaveMsg(type, msg);
+    if (FAILED(_hr)) _com_issue_errorex(_hr, this, __uuidof(this));
+    return _hr;
+}

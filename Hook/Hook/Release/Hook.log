@@ -1,0 +1,26 @@
+﻿生成启动时间为 2014/7/31/星期四 12:41:57。
+     1>项目“E:\WorkSpace\土鳖PVP宏\Hook\Hook\Hook.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Release\Hook.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+       ResourceCompile:
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\Hook.res" Hook.rc 
+       Link:
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\WorkSpace\土鳖PVP宏\Hook\Release\Hook.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\Hook.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\WorkSpace\土鳖PVP宏\Hook\Release\Hook.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\WorkSpace\土鳖PVP宏\Hook\Release\Hook.lib" /MACHINE:X86 Release\Hook.res
+         Release\Hook.obj
+         Release\Martin.obj
+         Release\Sink.obj
+         正在生成代码
+         已完成代码的生成
+         Hook.vcxproj -> E:\WorkSpace\土鳖PVP宏\Hook\Release\Hook.exe
+       Manifest:
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"E:\WorkSpace\土鳖PVP宏\Hook\Release\Hook.exe;#1" /manifest Release\Hook.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         正在删除文件“Release\Hook.unsuccessfulbuild”。
+         正在对“Release\Hook.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\WorkSpace\土鳖PVP宏\Hook\Hook\Hook.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.50

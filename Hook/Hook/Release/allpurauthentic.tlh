@@ -1,0 +1,228 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (c4d12660).
+//
+// e:\workspace\土鳖pvp宏\hook\hook\release\allpurauthentic.tlh
+//
+// C++ source equivalent of Win32 type library res\AllpurAuthentic.dll
+// compiler-generated file created 07/31/14 at 00:33:32 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("580c768f-3d9c-44a0-ab8c-be6b5e12e49a"))
+/* LIBID */ __AllpurAuthenticLib;
+struct __declspec(uuid("a533d35f-fe70-4a85-b7bc-b3c234eed4a5"))
+/* dispinterface */ _ICurrencyAuthEvents;
+struct /* coclass */ CurrencyAuth;
+struct __declspec(uuid("67daf47d-3b19-452e-922e-9f14f280a1d3"))
+/* dual interface */ ICurrencyAuth;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(_ICurrencyAuthEvents, __uuidof(_ICurrencyAuthEvents));
+_COM_SMARTPTR_TYPEDEF(ICurrencyAuth, __uuidof(ICurrencyAuth));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("a533d35f-fe70-4a85-b7bc-b3c234eed4a5"))
+_ICurrencyAuthEvents : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    HRESULT OnUpdate ( );
+    HRESULT OnInvalid ( );
+    HRESULT OnBulletin (
+        _bstr_t content );
+};
+
+struct __declspec(uuid("2694845a-1358-4291-aee5-d97c2b544097"))
+CurrencyAuth;
+    // [ default ] interface ICurrencyAuth
+    // [ default, source ] dispinterface _ICurrencyAuthEvents
+
+struct __declspec(uuid("67daf47d-3b19-452e-922e-9f14f280a1d3"))
+ICurrencyAuth : IDispatch
+{
+    //
+    // Wrapper methods for error-handling
+    //
+
+    HRESULT Initialize ( );
+    int Auth (
+        _bstr_t product,
+        _bstr_t serial );
+    int UserAuth (
+        _bstr_t product,
+        _bstr_t user,
+        _bstr_t pwd );
+    _bstr_t Encrypt (
+        unsigned char type,
+        _bstr_t src,
+        _bstr_t key );
+    _bstr_t Decrypt (
+        unsigned char type,
+        _bstr_t src,
+        _bstr_t key );
+    _bstr_t GetCode ( );
+    HRESULT Update ( );
+    _bstr_t GetBulletin ( );
+    VARIANT_BOOL IsValid ( );
+    _bstr_t GetValidity ( );
+    short DeductPoint (
+        short point );
+    unsigned short GetProductDataSize ( );
+    unsigned char GetProductData (
+        unsigned short pos );
+    unsigned char GetData (
+        unsigned char pos );
+    int PutData (
+        _bstr_t data );
+    unsigned char GetUserType ( );
+    _bstr_t GetVersion ( );
+    int Unbind ( );
+    int AddTime (
+        _bstr_t product,
+        _bstr_t card,
+        _bstr_t buyer,
+        short * days,
+        short * point );
+    int UserRegister (
+        _bstr_t product,
+        _bstr_t user,
+        _bstr_t pwd,
+        unsigned char type,
+        unsigned char bind,
+        short point );
+    int ChangePassword (
+        _bstr_t Old,
+        _bstr_t New );
+    VARIANT_BOOL IsConnected ( );
+    _bstr_t GetCurrTime ( );
+    int DeductHour (
+        unsigned long hour );
+    int GetTotalLen ( );
+    int GetDownloadLen ( );
+    HRESULT LeaveMsg (
+        unsigned char type,
+        _bstr_t msg );
+
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall raw_Initialize ( ) = 0;
+      virtual HRESULT __stdcall raw_Auth (
+        /*[in]*/ BSTR product,
+        /*[in]*/ BSTR serial,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_UserAuth (
+        /*[in]*/ BSTR product,
+        /*[in]*/ BSTR user,
+        /*[in]*/ BSTR pwd,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_Encrypt (
+        /*[in]*/ unsigned char type,
+        /*[in]*/ BSTR src,
+        /*[in]*/ BSTR key,
+        /*[out,retval]*/ BSTR * dst ) = 0;
+      virtual HRESULT __stdcall raw_Decrypt (
+        /*[in]*/ unsigned char type,
+        /*[in]*/ BSTR src,
+        /*[in]*/ BSTR key,
+        /*[out,retval]*/ BSTR * dst ) = 0;
+      virtual HRESULT __stdcall raw_GetCode (
+        /*[out,retval]*/ BSTR * ID ) = 0;
+      virtual HRESULT __stdcall raw_Update ( ) = 0;
+      virtual HRESULT __stdcall raw_GetBulletin (
+        /*[out,retval]*/ BSTR * content ) = 0;
+      virtual HRESULT __stdcall raw_IsValid (
+        /*[out,retval]*/ VARIANT_BOOL * valid ) = 0;
+      virtual HRESULT __stdcall raw_GetValidity (
+        /*[out,retval]*/ BSTR * time ) = 0;
+      virtual HRESULT __stdcall raw_DeductPoint (
+        short point,
+        /*[out,retval]*/ short * remain ) = 0;
+      virtual HRESULT __stdcall raw_GetProductDataSize (
+        /*[out,retval]*/ unsigned short * size ) = 0;
+      virtual HRESULT __stdcall raw_GetProductData (
+        /*[in]*/ unsigned short pos,
+        /*[out,retval]*/ unsigned char * ret ) = 0;
+      virtual HRESULT __stdcall raw_GetData (
+        /*[in]*/ unsigned char pos,
+        /*[out,retval]*/ unsigned char * ret ) = 0;
+      virtual HRESULT __stdcall raw_PutData (
+        /*[in]*/ BSTR data,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_GetUserType (
+        /*[out,retval]*/ unsigned char * ret ) = 0;
+      virtual HRESULT __stdcall raw_GetVersion (
+        /*[out,retval]*/ BSTR * ver ) = 0;
+      virtual HRESULT __stdcall raw_Unbind (
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_AddTime (
+        /*[in]*/ BSTR product,
+        /*[in]*/ BSTR card,
+        /*[in]*/ BSTR buyer,
+        /*[out]*/ short * days,
+        /*[out]*/ short * point,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_UserRegister (
+        /*[in]*/ BSTR product,
+        /*[in]*/ BSTR user,
+        /*[in]*/ BSTR pwd,
+        /*[in]*/ unsigned char type,
+        /*[in]*/ unsigned char bind,
+        /*[in]*/ short point,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_ChangePassword (
+        /*[in]*/ BSTR Old,
+        /*[in]*/ BSTR New,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_IsConnected (
+        /*[out,retval]*/ VARIANT_BOOL * ret ) = 0;
+      virtual HRESULT __stdcall raw_GetCurrTime (
+        /*[out,retval]*/ BSTR * ret ) = 0;
+      virtual HRESULT __stdcall raw_DeductHour (
+        /*[in]*/ unsigned long hour,
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_GetTotalLen (
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_GetDownloadLen (
+        /*[out,retval]*/ int * ret ) = 0;
+      virtual HRESULT __stdcall raw_LeaveMsg (
+        /*[in]*/ unsigned char type,
+        /*[in]*/ BSTR msg ) = 0;
+};
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_AllpurAuthenticLib =
+    {0x580c768f,0x3d9c,0x44a0,{0xab,0x8c,0xbe,0x6b,0x5e,0x12,0xe4,0x9a}};
+extern "C" const GUID __declspec(selectany) DIID__ICurrencyAuthEvents =
+    {0xa533d35f,0xfe70,0x4a85,{0xb7,0xbc,0xb3,0xc2,0x34,0xee,0xd4,0xa5}};
+extern "C" const GUID __declspec(selectany) CLSID_CurrencyAuth =
+    {0x2694845a,0x1358,0x4291,{0xae,0xe5,0xd9,0x7c,0x2b,0x54,0x40,0x97}};
+extern "C" const GUID __declspec(selectany) IID_ICurrencyAuth =
+    {0x67daf47d,0x3b19,0x452e,{0x92,0x2e,0x9f,0x14,0xf2,0x80,0xa1,0xd3}};
+
+//
+// Wrapper method implementations
+//
+
+#include "e:\workspace\土鳖pvp宏\hook\hook\release\allpurauthentic.tli"
+
+#pragma pack(pop)

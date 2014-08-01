@@ -125,7 +125,7 @@ unsigned int __stdcall ScriptRun(PVOID pM)
         if (GetKeyState(g_start) < 0) {    //按下1键状态
             if (g_hWgDlg != NULL) {
                 ::SendMessage(g_hWgDlg, WM_RUN, NULL, NULL);
-                Sleep(370);
+                Sleep(400);
             }
         }
         Sleep(30);
@@ -141,7 +141,6 @@ unsigned int __stdcall TuoMasi(PVOID pM)
             if (GetKeyState(g_start) < 0) {    //按下Q键状态
                 if (g_hWgDlg != NULL) {
                     ::SendMessage(g_hWgDlg, WM_TMS, NULL, NULL);
-                    Sleep(70);
                 }
             }
         }

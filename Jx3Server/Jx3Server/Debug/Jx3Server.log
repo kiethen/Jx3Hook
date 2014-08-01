@@ -1,31 +1,58 @@
-﻿生成启动时间为 2014/7/30/星期三 22:33:01。
-     1>项目“E:\WorkSpace\土鳖PVP宏\Jx3Server\Jx3Server\Jx3Server.vcxproj”在节点 2 上(build 个目标)。
-     1>InitializeBuildStatus:
+﻿生成启动时间为 2014/8/1/星期五 21:39:27。
+     1>项目“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Jx3Server\Jx3Server.vcxproj”在节点 2 上(build 个目标)。
+     1>PrepareForBuild:
+         正在创建目录“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\”。
+       InitializeBuildStatus:
          正在创建“Debug\Jx3Server.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         所有输出均为最新。
-         所有输出均为最新。
-         D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D JX3SERVER_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Jx3Server.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Jx3Server.cpp
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D JX3SERVER_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\Jx3Server.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D JX3SERVER_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp
+         dllmain.cpp
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D JX3SERVER_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Jx3Server.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Jx3Server.cpp Martin.cpp
+         Martin.cpp
          Jx3Server.cpp
+         正在生成代码...
        ManifestResourceCompile:
-         所有输出均为最新。
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Jx3Server.dll.embed.manifest.res" Debug\Jx3Server_manifest.rc 
        Link:
-         D:\Development\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\WorkSpace\土鳖PVP宏\Jx3Server\Debug\Jx3Server.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Jx3Server.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\WorkSpace\土鳖PVP宏\Jx3Server\Debug\Jx3Server.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\WorkSpace\土鳖PVP宏\Jx3Server\Debug\Jx3Server.lib" /MACHINE:X86 /DLL Debug\Jx3Server.dll.embed.manifest.res
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Jx3Server.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.lib" /MACHINE:X86 /DLL Debug\Jx3Server.dll.embed.manifest.res
          Debug\dllmain.obj
          Debug\Jx3Server.obj
          Debug\Martin.obj
          Debug\stdafx.obj
+            正在创建库 C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.lib 和对象 C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.exp
+     1>lua.lib(lapi.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lapi.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lauxlib.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lauxlib.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lcode.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lcode.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(ldebug.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(ldebug.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(ldo.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(ldo.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(ldump.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(ldump.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lfunc.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lfunc.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lgc.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lgc.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(llex.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(llex.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lmem.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lmem.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lobject.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lobject.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lopcodes.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lopcodes.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lparser.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lparser.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lstate.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lstate.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lstring.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lstring.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(ltable.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(ltable.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(ltm.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(ltm.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lundump.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lundump.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lvm.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lvm.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+     1>lua.lib(lzio.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lzio.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
        Manifest:
          c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Jx3Server.dll.embed.manifest" /manifest Debug\Jx3Server.dll.intermediate.manifest
          所有输出均为最新。
        LinkEmbedManifest:
          所有输出均为最新。
-         Jx3Server.vcxproj -> E:\WorkSpace\土鳖PVP宏\Jx3Server\Debug\Jx3Server.dll
+         Jx3Server.vcxproj -> C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.dll
        FinalizeBuildStatus:
          正在删除文件“Debug\Jx3Server.unsuccessfulbuild”。
          正在对“Debug\Jx3Server.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“E:\WorkSpace\土鳖PVP宏\Jx3Server\Jx3Server\Jx3Server.vcxproj”(build 个目标)的操作。
+     1>已完成生成项目“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Jx3Server\Jx3Server.vcxproj”(build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:00.60
+已用时间 00:00:02.63

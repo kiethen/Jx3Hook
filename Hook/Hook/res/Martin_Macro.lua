@@ -473,6 +473,22 @@ function Martin_Macro.CheckSkillCDTime(szSkillName,szRule,nTime)
 
 end
 
+function Martin_Macro.IsMaxMoon()
+    local a= Station.Lookup("Normal/Player")
+    local b= a:Lookup("", "Handle_MingJiao")
+    local maxmoon= b:Lookup("Animate_MoonValue"):IsVisible()
+    
+    return maxmoon
+end
+
+function Martin_Macro.IsMaxSun()
+    local a= Station.Lookup("Normal/Player")
+    local b= a:Lookup("", "Handle_MingJiao")
+    local maxsun= b:Lookup("Animate_SunValue"):IsVisible() 
+
+    return maxsun
+end
+
 --人物数值状态类
 function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 	local player = GetClientPlayer()
@@ -509,18 +525,24 @@ function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 	elseif szRule == "energy" then
 		dummycurrent = player.nCurrentEnergy
 		dummymax = player.nMaxEnergy
-	elseif szRule == "solar" then
-		dummycurrent = player.nCurrentSunEnergy
-		dummymax = player.nMaxSunEnergy
-	elseif szRule == "luna" then
-		dummycurrent = player.nCurrentMoonEnergy
-		dummymax = player.nMaxMoonEnergy
+	elseif szRule == "sun" then
+		dummycurrent = player.nCurrentSunEnergy / 100
+		dummymax = player.nMaxSunEnergy / 100
+        if Martin_Macro.IsMaxSun() then
+            dummycurrent = 100
+        end 
+	elseif szRule == "moon" then
+		dummycurrent = player.nCurrentMoonEnergy / 100
+		dummymax = player.nMaxMoonEnergy / 100
+        if Martin_Macro.IsMaxMoon() then
+            dummycurrent = 100
+        end
 	elseif szRule == "flypower" then
 		dummycurrent = player.nSprintPower
 		dummymax = player.nSprintPowerMax
 	end
 
-	local dummy = dummycurrent/dummymax
+	local dummy = dummycurrent/dummymax 
 
 	if szValue == "1.0" or szValue == "1" then
 		dummy = tonumber(("%.2f"):format(dummy))
@@ -741,7 +763,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
             end
             return Martin_Macro.MyGetDistance(tStackDataTable[1], tStackDataTable[2])
 
-        elseif szKeyName:find("life") ~= nil or szKeyName:find("mana") ~= nil or szKeyName:find("power") ~= nil or szKeyName:find("rage") ~= nil or szKeyName:find("dance") ~= nil or szKeyName:find("energy") ~= nil or szKeyName:find("solar") ~= nil or szKeyName:find("luna") ~= nil or szKeyName:find("flypower") ~= nil then
+        elseif szKeyName:find("life") ~= nil or szKeyName:find("mana") ~= nil or szKeyName:find("power") ~= nil or szKeyName:find("rage") ~= nil or szKeyName:find("dance") ~= nil or szKeyName:find("energy") ~= nil or szKeyName:find("sun") ~= nil or szKeyName:find("moon") ~= nil or szKeyName:find("flypower") ~= nil then
             local szCurrentWord = ""
             local tStackDataTable = {"", "=", ""}
             for i = 1, #szKeyName do

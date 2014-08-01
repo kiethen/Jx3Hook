@@ -1,9 +1,9 @@
-﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (c4d12660).
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (f9280834).
 //
-// e:\workspace\土鳖pvp宏\hook\hook\release\allpurauthentic.tlh
+// c:\users\martin\desktop\jx3hook\hook\hook\release\allpurauthentic.tlh
 //
 // C++ source equivalent of Win32 type library res\AllpurAuthentic.dll
-// compiler-generated file created 07/31/14 at 00:33:32 - DO NOT EDIT!
+// compiler-generated file created 07/31/14 at 21:49:57 - DO NOT EDIT!
 
 #pragma once
 #pragma pack(push, 8)
@@ -223,6 +223,6 @@ extern "C" const GUID __declspec(selectany) IID_ICurrencyAuth =
 // Wrapper method implementations
 //
 
-#include "e:\workspace\土鳖pvp宏\hook\hook\release\allpurauthentic.tli"
+#include "c:\users\martin\desktop\jx3hook\hook\hook\release\allpurauthentic.tli"
 
 #pragma pack(pop)

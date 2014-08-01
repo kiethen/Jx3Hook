@@ -2,6 +2,40 @@ Martin_Macro = {}
 --Martin_Macro.bChannel = false
 Martin_Macro.nStepper = 0
 
+Martin_Macro.nSkilldwID = 0
+Martin_Macro.nSkillLevel = 0
+
+
+--判断自己释放技能
+function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
+	local player = GetClientPlayer()
+
+	if player.dwID == PlayerID then
+        Martin_Macro.nSkilldwID = SkillID
+        Martin_Macro.nSkillLevel = SkillLv
+	end
+end
+
+--注册技能监控事件
+RegisterEvent("SYS_MSG", function()
+	if arg0 == "UI_OME_SKILL_HIT_LOG" and arg3 == SKILL_EFFECT_TYPE.SKILL then
+		Martin_Macro.MySkill(arg1, arg4, arg5)
+	elseif arg0 == "UI_OME_SKILL_EFFECT_LOG" and arg4 == SKILL_EFFECT_TYPE.SKILL then
+		Martin_Macro.MySkill(arg1, arg5, arg6)
+	elseif (arg0 == "UI_OME_SKILL_BLOCK_LOG" or arg0 == "UI_OME_SKILL_SHIELD_LOG" or arg0 == "UI_OME_SKILL_MISS_LOG" or arg0 == "UI_OME_SKILL_DODGE_LOG") and arg3 == SKILL_EFFECT_TYPE.SKILL then
+		Martin_Macro.MySkill(arg1, arg4, arg5)
+	end
+end)
+
+function Martin_Macro.CheckCast(szSkillName)
+    if Table_GetSkillName(Martin_Macro.nSkilldwID,Martin_Macro.nSkillLevel) == "szSkillName" then
+        return true
+    end
+
+	return false
+end
+
+
 --根据指定BUFF ID判断对象是否有BUFF
 function Martin_Macro.BuffChackById(hPlayer, dwBUFFID)
 	if hPlayer then
@@ -77,6 +111,18 @@ function Martin_Macro.MyGetDistance(szRule, nDce)
             end
         elseif szRule == "<" then
             if distance < nDce then
+                return true
+            end
+        elseif szRule == "=" then
+            if distance == nDce then
+                return true
+            end
+        elseif szRule == "<=" then
+            if distance <= nDce then
+                return true
+            end
+        elseif szRule == "<=" then
+            if distance <= nDce then
                 return true
             end
         end
@@ -179,8 +225,16 @@ function Martin_Macro.CheckBuffTime(szRule,szBuffName,szSym,nTime)
                     if nTimeLeft < tonumber(nTime) then
                         return true
                     end
-                elseif szSym == "==" then
+                elseif szSym == "=" then
                     if nTimeLeft == tonumber(nTime) then
+                        return true
+                    end
+                elseif szSym == "<=" then
+                    if nTimeLeft <= tonumber(nTime) then
+                        return true
+                    end
+                elseif szSym == ">=" then
+                    if nTimeLeft >= tonumber(nTime) then
                         return true
                     end
                 end
@@ -200,8 +254,16 @@ function Martin_Macro.CheckBuffTime(szRule,szBuffName,szSym,nTime)
                         if nTimeLeft < tonumber(nTime) then
                             return true
                         end
-                    elseif szSym == "==" then
+                    elseif szSym == "=" then
                         if nTimeLeft == tonumber(nTime) then
+                            return true
+                        end
+                    elseif szSym == "<=" then
+                        if nTimeLeft <= tonumber(nTime) then
+                            return true
+                        end
+                    elseif szSym == ">=" then
+                        if nTimeLeft >= tonumber(nTime) then
                             return true
                         end
                     end
@@ -244,6 +306,30 @@ function Martin_Macro.CheckHorse(szRule)
 
 end
 
+function Martin_Macro.CheckFight(szRule)
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+
+	if szRule == "fight" then
+		if player.bFightState then
+			return true
+		end
+	elseif szRule == "nofight" then
+		if not player.bFightState then
+			return true
+		end
+	elseif szRule == "tfight" and target then
+		if target.bFightState then
+			return true
+		end
+	elseif szRule == "tnofight" and target then
+		if not target.bFightState then
+			return true
+		end
+	end
+	return false
+end
+
 --cd类
 function Martin_Macro.CheckSkillCD(szRule,szSkillName)
 	local player = GetClientPlayer()
@@ -283,7 +369,15 @@ function Martin_Macro.CheckSkillCDTime(szSkillName,szRule,nTime)
 		if nLeft == nTime then
 			return true
 		end
-	end
+	elseif szRule == "<=" then
+		if nLeft <= nTime then
+			return true
+		end
+	elseif szRule == ">=" then
+		if nLeft >= nTime then
+			return true
+		end
+    end
 
 	return false
 
@@ -361,10 +455,57 @@ function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 		if dummy == nValue then
 			return true
 		end
+	elseif szSym == "<=" then
+		if dummy <= nValue then
+			return true
+		end
+	elseif szSym == ">=" then
+		if dummy >= nValue then
+			return true
+		end
 	end
 
 	return false
 
+end
+
+function Martin_Macro.CheckDeath(szRule)
+
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+
+	if szRule == "dead" and target then
+		if target.nMoveState == MOVE_STATE.ON_DEATH then
+			return true
+		end
+	elseif szRule == "nodead" and target then
+		if target.nMoveState ~= MOVE_STATE.ON_DEATH then
+			return true
+		end
+    end
+
+	return false
+end
+
+function Martin_Macro.CheckAlliance(szRUle)
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+
+	if szRule == "ally" and target then
+		if IsAlly(player.dwID,target.dwID) then
+			return true
+		end
+	elseif szRule == "enemy" and target then
+		if IsEnemy(player.dwID,target.dwID) then
+			return true
+		end
+	elseif szRule == "neutral" and target then
+		if IsNeutrality(player.dwID,target.dwID) then
+			return true
+		end
+	end
+
+	return false
 end
 
 --人物普通状态类
@@ -499,7 +640,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
             local tStackDataTable = {"=", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" then
+                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
                     tStackDataTable[1] = ch
                     szCurrentWord = ""
                 else
@@ -516,7 +657,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
             local tStackDataTable = {"", "=", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" then
+                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
                     tStackDataTable[1] = szCurrentWord
                     tStackDataTable[2] = ch
                     szCurrentWord = ""
@@ -534,7 +675,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
             local tStackDataTable = {szRule, "", "=", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" then
+                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
                     tStackDataTable[2] = szCurrentWord
                     tStackDataTable[3] = ch
                     szCurrentWord = ""
@@ -553,11 +694,23 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
         elseif szRule:find("status") ~= nil then
                 return Martin_Macro.CheckStatus(szRule,szKeyName)
 
+        elseif szKeyName:find("ally") ~= nil or szRule:find("enemy") ~= nil or szRule:find("neutral") ~= nil then
+                return Martin_Macro.CheckAlliance(szKeyName)
+
         elseif szKeyName:find("horse") ~= nil then
                 return Martin_Macro.CheckHorse(szKeyName)
 
+        elseif szKeyName:find("fight") ~= nil then
+                return Martin_Macro.CheckFight(szKeyName)
+
+        elseif szKeyName:find("dead") ~= nil then
+                return Martin_Macro.CheckDeath(szKeyName)
+
         elseif szRule:find("prepare") ~= nil then
                 return Martin_Macro.CheckSkillPrepare(szRule,szKeyName)
+
+        elseif szRule:find("cast") ~= nil then
+                return Martin_Macro.CheckCast(szRule,szKeyName)
 
         elseif szRule:find("state") ~= nil then
                 return Martin_Macro.CheckState(szRule,szKeyName)
@@ -567,7 +720,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
                 local tStackDataTable = {"", "=", 0}
                 for i = 1, #szKeyName do
                     local ch = szKeyName:sub(i, i)
-                    if ch == ">" or ch == "=" or ch == "<" then
+                    if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
                         tStackDataTable[1] = szCurrentWord
                         tStackDataTable[2] = ch
                         szCurrentWord = ""

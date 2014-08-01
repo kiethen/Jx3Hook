@@ -1,37 +1,72 @@
 Martin_Macro = {}
 --Martin_Macro.bChannel = false
-Martin_Macro.nStepper = 0
+--Martin_Macro.nStepper = 0
 
 Martin_Macro.nSkilldwID = 0
 Martin_Macro.nSkillLevel = 0
-
+Martin_Macro.tnSkilldwID = 0
+Martin_Macro.tnSkillLevel = 0
 
 --判断自己释放技能
 function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
 	local player = GetClientPlayer()
+	local ttp,tid = player.GetTarget()
+	local tplayer = GetTargetHandle(ttp,tid)
 
 	if player.dwID == PlayerID then
-        Martin_Macro.nSkilldwID = SkillID
-        Martin_Macro.nSkillLevel = SkillLv
+        if Table_GetSkillName(SkillID,SkillLv) ~= nil and Table_GetSkillName(SkillID,SkillLv) ~= "" then
+            Martin_Macro.nSkilldwID = SkillID
+            Martin_Macro.nSkillLevel = SkillLv    
+        end
+    elseif tid == PlayerID then
+        if Table_GetSkillName(SkillID,SkillLv) ~= nil and Table_GetSkillName(SkillID,SkillLv) ~= "" then
+            Martin_Macro.tnSkilldwID = SkillID
+            Martin_Macro.tnSkillLevel = SkillLv    
+        end
 	end
 end
 
 --注册技能监控事件
 RegisterEvent("SYS_MSG", function()
 	if arg0 == "UI_OME_SKILL_HIT_LOG" and arg3 == SKILL_EFFECT_TYPE.SKILL then
-		Martin_Macro.MySkill(arg1, arg4, arg5)
+        if Table_GetSkillName(arg4,arg5) ~= nil and Table_GetSkillName(arg4,arg5) ~= "" then
+            Martin_Macro.MySkill(arg1,arg4,arg5)
+        end
 	elseif arg0 == "UI_OME_SKILL_EFFECT_LOG" and arg4 == SKILL_EFFECT_TYPE.SKILL then
-		Martin_Macro.MySkill(arg1, arg5, arg6)
+        if Table_GetSkillName(arg5,arg6) ~= nil and Table_GetSkillName(arg5,arg6) ~= "" then
+            Martin_Macro.MySkill(arg1,arg5,arg6)
+        end
 	elseif (arg0 == "UI_OME_SKILL_BLOCK_LOG" or arg0 == "UI_OME_SKILL_SHIELD_LOG" or arg0 == "UI_OME_SKILL_MISS_LOG" or arg0 == "UI_OME_SKILL_DODGE_LOG") and arg3 == SKILL_EFFECT_TYPE.SKILL then
-		Martin_Macro.MySkill(arg1, arg4, arg5)
+        if Table_GetSkillName(arg4,arg5) ~= nil and Table_GetSkillName(arg4,arg5) ~= "" then
+            Martin_Macro.MySkill(arg1,arg4,arg5)
+        end
 	end
 end)
 
-function Martin_Macro.CheckCast(szSkillName)
-    if Table_GetSkillName(Martin_Macro.nSkilldwID,Martin_Macro.nSkillLevel) == "szSkillName" then
-        return true
+RegisterEvent("DO_SKILL_CAST",  function()
+    if Table_GetSkillName(arg1,arg2) ~= nil and Table_GetSkillName(arg1,arg2) ~= "" then
+      Martin_Macro.MySkill(arg0,arg1,arg2)
     end
+end)
 
+function Martin_Macro.CheckCast(szRule,szKeyName)
+    if szRule == "cast" then
+        if Table_GetSkillName(Martin_Macro.nSkilldwID,Martin_Macro.nSkillLevel) == szKeyName then
+            Martin_Macro.nSkilldwID = 0
+            Martin_Macro.nSkillLevel = 0
+            Martin_Macro.tnSkilldwID = 0
+            Martin_Macro.tnSkillLevel = 0
+            return true
+        end
+    elseif szRule == "tcast" then
+        if Table_GetSkillName(Martin_Macro.tnSkilldwID,Martin_Macro.tnSkillLevel) == szKeyName then
+            Martin_Macro.nSkilldwID = 0
+            Martin_Macro.nSkillLevel = 0
+            Martin_Macro.tnSkilldwID = 0
+            Martin_Macro.tnSkillLevel = 0
+            return true
+        end
+    end
 	return false
 end
 
@@ -146,20 +181,79 @@ function Martin_Macro.FaceToTarget()
         TurnTo(math.atan2(tanY,tanX)*128/math.pi)
 end
 
+--计算面向 0 ~ 180 face>45  noface
+function Martin_Macro.CheckFace(szRule,szSym,szValue)
+    local player = GetClientPlayer()
+    local ttp,tid = player.GetTarget()
+    local tplayer = GetTargetHandle(ttp,tid)
+
+    if not tplayer then
+		return false
+	end
+
+    local tanX = tplayer.nX - player.nX
+    local tanY = tplayer.nY - player.nY
+    local meface = math.abs((player.nFaceDirection - math.atan2(tanY,tanX)*128/math.pi)*360/256)
+
+    --if (math.atan2(tanY,tanX)*128/math.pi) < 0 then
+		--meface = (math.abs(player.nFaceDirection - (256 - math.abs(math.atan2(tanY,tanX)*128/math.pi))))
+	--else
+		--meface = (math.abs(player.nFaceDirection - math.abs(math.atan2(tanY,tanX)*128/math.pi)))
+	--end
+
+    if meface > 180 then
+        meface = 360 - meface
+    end
+
+    if szValue == "noface" then
+        if meface > 90 then
+            return true
+        end
+    elseif szRule == "face" then
+        szValue = tonumber(szValue)
+        if szSym == "=" then
+            if meface == szValue then
+                return true
+            end          
+        elseif szSym == ">" then
+            if meface > szValue then
+                return true
+            end
+        elseif szSym == ">=" then
+            if meface >= szValue then
+                return true
+            end
+        elseif szSym == "<" then
+            if meface < szValue then
+                return true
+            end
+        elseif szSym == "<=" then
+            if meface <= szValue then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
 --是否在读条
 function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 
     szSkillName = szSkillName or ""
 
 	local player = GetClientPlayer()
-	local target = GetTargetHandle(player.GetTarget())
+	--local target = GetTargetHandle(player.GetTarget())
     local bPrepare, dwID, nLevel, nFrameProgress
 
     if szRule == "prepare" then 
 		bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
-	elseif szRule == "tprepare" and target then
-		bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState()
-	end
+    end
+    --if szRule == "prepare" then 
+		--bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
+	--elseif szRule == "tprepare" and target then
+		--bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState()
+	--end
 
     if szSkillName == "" then
         return bPrepare
@@ -272,15 +366,12 @@ function Martin_Macro.CheckBuffTime(szRule,szBuffName,szSym,nTime)
         end
     end
 
-
-
 	return false
 
 end
 
 --检查是否在马上
 function Martin_Macro.CheckHorse(szRule)
-
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
 
@@ -303,7 +394,6 @@ function Martin_Macro.CheckHorse(szRule)
 	end
 
 	return false
-
 end
 
 function Martin_Macro.CheckFight(szRule)
@@ -385,7 +475,6 @@ end
 
 --人物数值状态类
 function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
-
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
     
@@ -666,9 +755,27 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
                     if #szKeyName == i then		-- 最后一个字符, 这里要最后计算一次
                         tStackDataTable[3] = szCurrentWord
                     end
-                end  
+                end
             end
             return Martin_Macro.CheckCharacterPointValue(tStackDataTable[1], tStackDataTable[2], tStackDataTable[3])
+
+        elseif szKeyName:find("face") ~= nil then
+            local szCurrentWord = ""
+            local tStackDataTable = {"", "=", ""}
+            for i = 1, #szKeyName do
+                local ch = szKeyName:sub(i, i)
+                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
+                    tStackDataTable[1] = szCurrentWord
+                    tStackDataTable[2] = ch
+                    szCurrentWord = ""
+                else
+                    szCurrentWord = szCurrentWord .. ch
+                    if #szKeyName == i then		-- 最后一个字符, 这里要最后计算一次
+                        tStackDataTable[3] = szCurrentWord
+                    end
+                end  
+            end
+            return Martin_Macro.CheckFace(tStackDataTable[1], tStackDataTable[2], tStackDataTable[3])
 
         elseif szRule:find("bufftime") ~= nil then      
             local szCurrentWord = ""

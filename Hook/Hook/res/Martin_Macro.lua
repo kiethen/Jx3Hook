@@ -7,7 +7,7 @@ Martin_Macro.nSkillLevel = 0
 Martin_Macro.tnSkilldwID = 0
 Martin_Macro.tnSkillLevel = 0
 
---判断自己释放技能
+--判断上一次释放技能
 function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
 	local player = GetClientPlayer()
 	local ttp,tid = player.GetTarget()
@@ -168,17 +168,17 @@ end
 
 --计算转向角度并转向目标
 function Martin_Macro.FaceToTarget()
-        local player = GetClientPlayer()
-        local ttp,tid = player.GetTarget()
-        if tid == 0 or tid == player.dwID then
-            return
-        end
-        
-        local tplayer = GetTargetHandle(ttp,tid)  
-        local tanX = tplayer.nX - player.nX
-        local tanY = tplayer.nY - player.nY
+    local player = GetClientPlayer()
+    local ttp,tid = player.GetTarget()
+    if tid == 0 or tid == player.dwID then
+        return
+    end
 
-        TurnTo(math.atan2(tanY,tanX)*128/math.pi)
+    local tplayer = GetTargetHandle(ttp,tid)  
+    local tanX = tplayer.nX - player.nX
+    local tanY = tplayer.nY - player.nY
+
+    TurnTo(math.atan2(tanY,tanX)*128/math.pi)
 end
 
 --计算面向 0 ~ 180 face>45  noface
@@ -239,26 +239,29 @@ end
 
 --是否在读条
 function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
-
-    szSkillName = szSkillName or ""
-
 	local player = GetClientPlayer()
-	--local target = GetTargetHandle(player.GetTarget())
-    local bPrepare, dwID, nLevel, nFrameProgress
+	local target = GetTargetHandle(player.GetTarget())
 
-    if szRule == "prepare" then 
-		bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
-    end
-    --if szRule == "prepare" then 
-		--bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
-	--elseif szRule == "tprepare" and target then
-		--bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState()
-	--end
+    if target then
+        local bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState() 
+        --if szRule == "prepare" then 
+            --bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
+        --elseif szRule == "tprepare" and target then
+            --bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState()
+        --end
 
-    if szSkillName == "" then
-        return bPrepare
-    elseif Table_GetSkillName(dwID,nLevel) == szSkillName then
-        return true
+        if szSkillName == "prepare" then
+            if bPrepare == true then
+                if nFrameProgress > 0.4 then
+                    return true
+                end
+                
+            end  
+        elseif Table_GetSkillName(dwID,nLevel) == szSkillName then
+                if nFrameProgress > 0.4 then
+                    return true
+                end
+        end
     end
 
     return false
@@ -835,7 +838,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
         elseif szKeyName:find("dead") ~= nil then
                 return Martin_Macro.CheckDeath(szKeyName)
 
-        elseif szRule:find("prepare") ~= nil then
+        elseif szRule:find("prepare") ~= nil or szKeyName:find("prepare") ~= nil then
                 return Martin_Macro.CheckSkillPrepare(szRule,szKeyName)
 
         elseif szRule:find("cast") ~= nil then

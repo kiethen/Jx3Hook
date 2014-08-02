@@ -9,6 +9,7 @@ Martin_Macro.tnSkillLevel = 0
 
 --判断上一次释放技能
 function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
+
 	local player = GetClientPlayer()
 	local ttp,tid = player.GetTarget()
 	local tplayer = GetTargetHandle(ttp,tid)
@@ -24,6 +25,7 @@ function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
             Martin_Macro.tnSkillLevel = SkillLv    
         end
 	end
+
 end
 
 --注册技能监控事件
@@ -50,6 +52,7 @@ RegisterEvent("DO_SKILL_CAST",  function()
 end)
 
 function Martin_Macro.CheckCast(szRule,szKeyName)
+
     if szRule == "cast" then
         if Table_GetSkillName(Martin_Macro.nSkilldwID,Martin_Macro.nSkillLevel) == szKeyName then
             Martin_Macro.nSkilldwID = 0
@@ -68,11 +71,13 @@ function Martin_Macro.CheckCast(szRule,szKeyName)
         end
     end
 	return false
+
 end
 
 
 --根据指定BUFF ID判断对象是否有BUFF
 function Martin_Macro.BuffChackById(hPlayer, dwBUFFID)
+
 	if hPlayer then
         for i = 1,hPlayer.GetBuffCount(),1 do
             local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = hPlayer.GetBuff(i - 1)
@@ -83,10 +88,12 @@ function Martin_Macro.BuffChackById(hPlayer, dwBUFFID)
 	end
 
     return 0
+
 end
 
 --根据指定BUFF Name判断对象是否有BUFF
 function Martin_Macro.BuffChackByName(hPlayer, szBuffName, bMbuff)
+
 	if hPlayer then
         if bMbuff == false then
             for i = 1,hPlayer.GetBuffCount(),1 do
@@ -109,10 +116,12 @@ function Martin_Macro.BuffChackByName(hPlayer, szBuffName, bMbuff)
 
 	end
     return false
+
 end
 
 --通过技能名获取技能ID 等级
 function Martin_Macro.GetSkillID(szSkillName)
+
 	--local hPlayer = GetClientPlayer()
 	--local aSkill = hPlayer.GetAllSkillList() or {}
 	--for k, v in pairs(aSkill) do
@@ -130,6 +139,7 @@ end
 
 -- 计算目标距离，多玩盒子的GetDistance只能判断水平，高度不算在内
 function Martin_Macro.MyGetDistance(szRule, nDce)
+
 	local player = GetClientPlayer()
 	local ttp,tid = player.GetTarget()
 	local tplayer = GetTargetHandle(ttp,tid)
@@ -164,10 +174,12 @@ function Martin_Macro.MyGetDistance(szRule, nDce)
         
         return false
 	end
+
 end
 
 --计算转向角度并转向目标
 function Martin_Macro.FaceToTarget()
+
     local player = GetClientPlayer()
     local ttp,tid = player.GetTarget()
     if tid == 0 or tid == player.dwID then
@@ -179,10 +191,12 @@ function Martin_Macro.FaceToTarget()
     local tanY = tplayer.nY - player.nY
 
     TurnTo(math.atan2(tanY,tanX)*128/math.pi)
+
 end
 
 --计算面向 0 ~ 180 face>45  noface
 function Martin_Macro.CheckFace(szRule,szSym,szValue)
+
     local player = GetClientPlayer()
     local ttp,tid = player.GetTarget()
     local tplayer = GetTargetHandle(ttp,tid)
@@ -235,10 +249,12 @@ function Martin_Macro.CheckFace(szRule,szSym,szValue)
     end
 
     return false
+
 end
 
 --是否在读条
 function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
 
@@ -265,10 +281,12 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
     end
 
     return false
+
 end
 
 --buff类
 function Martin_Macro.CheckBuff(szRule,szBuffName)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
 
@@ -292,9 +310,11 @@ function Martin_Macro.CheckBuff(szRule,szBuffName)
 	end
 
     return false
+
 end
 
 function Martin_Macro.CheckBuffTime(szRule,szBuffName,szSym,nTime)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
     local dummy
@@ -375,6 +395,7 @@ end
 
 --检查是否在马上
 function Martin_Macro.CheckHorse(szRule)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
 
@@ -397,9 +418,11 @@ function Martin_Macro.CheckHorse(szRule)
 	end
 
 	return false
+
 end
 
 function Martin_Macro.CheckFight(szRule)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
 
@@ -421,10 +444,12 @@ function Martin_Macro.CheckFight(szRule)
 		end
 	end
 	return false
+
 end
 
 --cd类
 function Martin_Macro.CheckSkillCD(szRule,szSkillName)
+
 	local player = GetClientPlayer()
 	local nSkillID = g_SkillNameToID[szSkillName]
 	local bCool,nLeft,nTotal = player.GetSkillCDProgress(nSkillID,player.GetSkillLevel(nSkillID))
@@ -444,6 +469,7 @@ function Martin_Macro.CheckSkillCD(szRule,szSkillName)
 end
 
 function Martin_Macro.CheckSkillCDTime(szSkillName,szRule,nTime)
+
 	local player = GetClientPlayer()
 	local nSkillID = g_SkillNameToID[szSkillName]
 	local bCool,nLeft,nTotal = player.GetSkillCDProgress(nSkillID,player.GetSkillLevel(nSkillID))
@@ -477,23 +503,28 @@ function Martin_Macro.CheckSkillCDTime(szSkillName,szRule,nTime)
 end
 
 function Martin_Macro.IsMaxMoon()
+
     local a= Station.Lookup("Normal/Player")
     local b= a:Lookup("", "Handle_MingJiao")
     local maxmoon= b:Lookup("Animate_MoonValue"):IsVisible()
     
     return maxmoon
+
 end
 
 function Martin_Macro.IsMaxSun()
+
     local a= Station.Lookup("Normal/Player")
     local b= a:Lookup("", "Handle_MingJiao")
     local maxsun= b:Lookup("Animate_SunValue"):IsVisible() 
 
     return maxsun
+
 end
 
 --人物数值状态类
 function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
     
@@ -547,7 +578,7 @@ function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 
 	local dummy = dummycurrent/dummymax 
 
-	if szValue == "1.0" or szValue == "1" then
+	if szValue == "1.0" then
 		dummy = tonumber(("%.2f"):format(dummy))
 	elseif tonumber(szValue) >= 1 then
 		dummy = dummycurrent
@@ -602,6 +633,7 @@ function Martin_Macro.CheckDeath(szRule)
 end
 
 function Martin_Macro.CheckAlliance(szRUle)
+
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
 
@@ -620,6 +652,7 @@ function Martin_Macro.CheckAlliance(szRUle)
 	end
 
 	return false
+
 end
 
 --人物普通状态类
@@ -706,6 +739,7 @@ function Martin_Macro.CheckKungfuMount(szRule,szKungfuName)
 end
 
 function Martin_Macro.CheckState(szRule, sParam)
+
     if szRule == "state" then
         if sParam == "无减伤" then
             local szOption = "nobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神|泉凝月|云栖松|转乾坤|天地低昂|笑醉狂|贪魔体"
@@ -745,9 +779,11 @@ function Martin_Macro.CheckState(szRule, sParam)
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         end
     end
+
 end
 
 function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
+
     if szKeyName ~= "" then
         if szKeyName:find("distance") ~= nil or szKeyName:find("Distance") ~= nil then
             local szCurrentWord = ""
@@ -878,9 +914,11 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
     end
 
 	return true
+
 end
 
 function Martin_Macro.CalculateMacroConditionResult(szMsg)
+
 	local szCurrentWord = ""
 
 	local nCurrentStackLevel = 1;						    -- 处理过程中的当前栈级
@@ -961,10 +999,12 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 	end
     
 	return tStackDataTable[1][1]
+
 end
 
 --把指定的宏指令转换成Lua指令
 function Martin_Macro.Str_To_Lua(strCodes)
+
     local szRule, szCondition, szSkillName = "", "", ""
 
     szRule = strCodes:gsub("%b[]",""):gsub("%s*",""):gsub("%/",""):gsub("%A+","")
@@ -976,6 +1016,7 @@ function Martin_Macro.Str_To_Lua(strCodes)
     szSkillName  = strCodes:gsub("%b[]",""):gsub("%s*",""):gsub("%/",""):gsub("%a+","")
 
     return szRule, szCondition, szSkillName
+
 end
 
 --Martin_Macro.hfile = assert(io.open("C:\\Windows\\testRead.txt", 'r'))
@@ -992,6 +1033,7 @@ end
 --end)
 
 function Martin_Macro.Run()
+
 	collectgarbage("collect")
 
     for szMsg in io.lines("C:\\Windows\\testRead.txt") do
@@ -1002,10 +1044,27 @@ function Martin_Macro.Run()
         local szRule, szCondition, szSkillName = Martin_Macro.Str_To_Lua(szMsg)
 
         if szRule == "cast" then
-             if Martin_Macro.CalculateMacroConditionResult(szCondition) then           
-                local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
-                if nSkillID ~= 2603 then
-                    OnUseSkill(nSkillID, nSkillLv)
+             if Martin_Macro.CalculateMacroConditionResult(szCondition) then
+                if szSkillName == "轻功躲避" then
+                    if Martin_Macro.CheckSkillCD("nocd","凌霄揽胜") then
+                        local nSkillID, nSkillLv = Martin_Macro.GetSkillID("凌霄揽胜")
+                        OnUseSkill(nSkillID, nSkillLv)
+                    elseif Martin_Macro.CheckSkillCD("nocd","瑶台枕鹤") then
+                        local nSkillID, nSkillLv = Martin_Macro.GetSkillID("瑶台枕鹤")
+                        OnUseSkill(nSkillID, nSkillLv)
+                    elseif Martin_Macro.CheckSkillCD("nocd","迎风回浪") then
+                        local nSkillID, nSkillLv = Martin_Macro.GetSkillID("迎风回浪")
+                        OnUseSkill(nSkillID, nSkillLv)
+                    else
+                        OnUseSkill(9007,1) --后撤
+                    end 
+                elseif szSkillName == "跳" then
+                    Camera_EnableControl(CONTROL_JUMP, true)
+                else
+                    local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
+                    if nSkillID ~= 2603 then
+                        OnUseSkill(nSkillID, nSkillLv)
+                    end
                 end
             end 
         --elseif szRule == "config" then
@@ -1051,6 +1110,7 @@ function Martin_Macro.Run()
                 --end          
             --end
         --end
+
 end
 
 OutputMessage("MSG_SYS", "======加载成功======".."\n")

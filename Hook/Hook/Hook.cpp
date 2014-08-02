@@ -125,6 +125,7 @@ BOOL CALLBACK DialogProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam 
         g_hDlg = hwndDlg;
         ::SetWindowTextA(::GetDlgItem(hwndDlg, IDC_STATIC_TIME), pAuth->GetValidity());
         ::SetWindowTextA(::GetDlgItem(hwndDlg, IDC_EDIT_NOTICES), (char*)pAuth->GetBulletin());
+        ::SendMessageA(::GetDlgItem(hwndDlg, IDC_CHECK_FACE), BM_SETCHECK, 1, 0);
 
         TrayMyIcon(hwndDlg, TRUE);
         ::SendMessage(hwndDlg, WM_SETICON, (WPARAM)TRUE, (LPARAM)LoadIcon(GetModuleHandle(NULL), (LPCTSTR)IDI_ICON));

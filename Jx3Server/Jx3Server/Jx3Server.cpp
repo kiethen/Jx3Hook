@@ -11,7 +11,7 @@
 #pragma data_seg("MyJx3Sec") //--节开始
 
 int     g_start = 0x31;//要共享的数据,注意:要往节中放置一个变量,这个变量必须已经初始化 如: int example = 100;
-BOOL    g_bIsFace = FALSE;//要共享的数据,注意:要往节中放置一个变量,这个变量必须已经初始化 如: int example = 100;
+BOOL    g_bIsFace = TRUE;//要共享的数据,注意:要往节中放置一个变量,这个变量必须已经初始化 如: int example = 100;
 
 #pragma data_seg()	//--节结束
 

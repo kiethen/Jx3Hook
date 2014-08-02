@@ -1,8 +1,6 @@
-﻿生成启动时间为 2014/8/1/星期五 21:39:27。
+﻿生成启动时间为 2014/8/2/星期六 10:02:56。
      1>项目“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Jx3Server\Jx3Server.vcxproj”在节点 2 上(build 个目标)。
-     1>PrepareForBuild:
-         正在创建目录“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\”。
-       InitializeBuildStatus:
+     1>InitializeBuildStatus:
          正在创建“Debug\Jx3Server.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
          D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D JX3SERVER_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\Jx3Server.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
@@ -21,6 +19,7 @@
          Debug\Jx3Server.obj
          Debug\Martin.obj
          Debug\stdafx.obj
+         LINK : 没有找到 C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.dll 或上一个增量链接没有生成它；正在执行完全链接
             正在创建库 C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.lib 和对象 C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\Jx3Server.exp
      1>lua.lib(lapi.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lapi.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
      1>lua.lib(lauxlib.obj) : warning LNK4099: 未找到 PDB“vc100.pdb”(使用“lua.lib(lauxlib.obj)”或在“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\vc100.pdb”中寻找)；正在链接对象，如同没有调试信息一样
@@ -55,4 +54,4 @@
 
 生成成功。
 
-已用时间 00:00:02.63
+已用时间 00:00:01.70

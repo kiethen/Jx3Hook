@@ -614,6 +614,43 @@ function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 
 end
 
+function Martin_Macro.CheckName(szRule,szValue)
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+	local ttarget = GetTargetHandle(target.GetTarget())
+    
+    local szName = ""
+
+    if szValue == "$myname" then
+        szName = player.szName    
+    else
+        szName = szValue
+    end
+    
+    if szRule == "tname" then
+        if target.szName == szName then
+            return true
+        end
+    
+    elseif szRule == "tnoname" then
+        if target.szName ~= szName then
+            return true
+        end
+
+    elseif szRule == "ttname" then
+        if ttarget.szName == szName then
+            return true
+        end
+
+    elseif szRule == "ttnoname" then
+        if ttarget.szName ~= szName then
+            return true
+        end
+    end
+    
+    return false
+end
+
 function Martin_Macro.CheckDeath(szRule)
 
 	local player = GetClientPlayer()
@@ -858,6 +895,9 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("buff") ~= nil then
                 return Martin_Macro.CheckBuff(szRule,szKeyName)
+
+        elseif szRule:find("name") ~= nil then
+                return Martin_Macro.CheckName(szRule,szKeyName)
 
         elseif szRule:find("status") ~= nil then
                 return Martin_Macro.CheckStatus(szRule,szKeyName)

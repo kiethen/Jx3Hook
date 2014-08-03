@@ -5,25 +5,56 @@
 #include <atlconv.h>
 #include "Sink.h"
 
-
+HMODULE g_hMod = NULL;
 typedef int (*_SETHOOK)();
 typedef int (*_SetStart)(int);
 typedef int (*_SetFace)(BOOL);
 
+#define  WM_SETWORK         WM_USER + 503
+
+BOOL CALLBACK EnumWindowCallBack(HWND hWnd, LPARAM lParam)  
+{  
+    DWORD* h = (DWORD*)lParam;
+    char szDlgName[20] = {0};
+    GetWindowTextA(hWnd, szDlgName, sizeof(szDlgName));
+
+    // 判断是否是指定进程的主窗口
+    if (strstr(szDlgName, "土鳖MSG") != NULL) {  
+        *h = (DWORD)hWnd;
+        return FALSE;  
+    }  
+
+    return TRUE;  
+}
+
+
+void OnBnSetWork()
+{
+    HWND h = NULL;
+    EnumWindows(EnumWindowCallBack, (LPARAM)&h); 
+    
+    if (h != NULL) {
+        ::SendMessage(h, WM_SETWORK , NULL, NULL);
+    }
+}
+
 void OnBnStart(HWND hDlg)
 {
     int nErr = 10000;
-    HMODULE hMod = LoadLibrary(_T("C:\\Windows\\Jx3Server.dll"));	//显示加载DLL 
-    if (hMod) {
-        _SETHOOK SetHook = (_SETHOOK)GetProcAddress(hMod, "SetHook");	//注意第二个参数只能是窄字符
+    
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    if (g_hMod == NULL) {
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+    }
+
+    if (g_hMod) {
+        _SETHOOK SetHook = (_SETHOOK)GetProcAddress(g_hMod, "SetHook");	//注意第二个参数只能是窄字符
         SetHook();
     } else {
         nErr = GetLastError();
         martin->MsgBox(TEXT("提示"), TEXT("缺少必备文件, 请联系客服!!\r\n错误代码: %d"), nErr);
         return;
     }
-
-    FreeLibrary(hMod);
 }
 
 void OnBnEdit(HWND hDlg)
@@ -34,9 +65,14 @@ void OnBnEdit(HWND hDlg)
 void OnCkFace(HWND hDlg)
 {
     int nErr = 10000;
-    HMODULE hMod = LoadLibrary(_T("C:\\Windows\\Jx3Server.dll"));	//显示加载DLL 
-    if (hMod) {
-        _SetFace SetFace = (_SetFace)GetProcAddress(hMod, "SetFace");	//注意第二个参数只能是窄字符
+
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    if (g_hMod == NULL) {
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+    }
+
+    if (g_hMod) {
+        _SetFace SetFace = (_SetFace)GetProcAddress(g_hMod, "SetFace");	//注意第二个参数只能是窄字符
         BOOL bIsFace = ::SendMessageA(::GetDlgItem(hDlg, IDC_CHECK_FACE), BM_GETCHECK, 0, 0);
         SetFace(bIsFace);
     } else {
@@ -44,8 +80,6 @@ void OnCkFace(HWND hDlg)
         martin->MsgBox(TEXT("提示"), TEXT("缺少必备文件, 请联系客服!!\r\n错误代码: %d"), nErr);
         return;
     }
-
-    FreeLibrary(hMod);
 }
 
 void OnBnSet(HWND hDlg)
@@ -58,9 +92,14 @@ void OnBnSet(HWND hDlg)
     char* szCode = W2A(&strCode);
 
     int nErr = 10000;
-    HMODULE hMod = LoadLibrary(_T("C:\\Windows\\Jx3Server.dll")); //显示加载DLL
-    if (hMod) {
-        SetStart = (_SetStart)GetProcAddress(hMod, "SetStart");	//注意第二个参数只能是窄字符
+    
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    if (g_hMod == NULL) {
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+    }
+
+    if (g_hMod) {
+        SetStart = (_SetStart)GetProcAddress(g_hMod, "SetStart");	//注意第二个参数只能是窄字符
     } else {
         nErr = GetLastError();
         martin->MsgBox(TEXT("提示"), TEXT("缺少必备文件, 请联系客服!!\r\n错误代码: %d"), nErr);
@@ -77,8 +116,6 @@ void OnBnSet(HWND hDlg)
         ::SetWindowText(::GetDlgItem(hDlg, IDC_BUTTON_SET), TEXT("设置"));
         SetStart(VK_HOME);
     }
-
-    FreeLibrary(hMod);
 }
 
 #define WM_TRAYICON_MSG (WM_USER+1100)
@@ -153,10 +190,10 @@ BOOL CALLBACK DialogProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam 
                 TrayMyIcon(hwndDlg, TRUE);
             } else {
                 TrayMyIcon(hwndDlg, FALSE);
+                OnBnSetWork();
                 EndDialog (hwndDlg, 0);
                 EndDialog (g_LoginhDlg, 0);   
             }
-            
             return TRUE;
 
         case IDC_BUTTON_START :
@@ -230,7 +267,16 @@ void OnBnLogin(HWND hwndDlg)
     ShowWindow(hwndDlg, FALSE);
     Sleep(200);
 
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    if (g_hMod == NULL) {
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+    }
+
     DialogBox(GetModuleHandle(NULL), TEXT("Jx3Hook"), NULL, DialogProc);
+
+    if (g_hMod != NULL) {
+        ::CloseHandle(::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, g_hMod, 0, NULL));
+    }
 }
 
 void OnBnMoney(HWND hwndDlg)

@@ -12,14 +12,13 @@
 
 int     g_start = 0x31;//要共享的数据,注意:要往节中放置一个变量,这个变量必须已经初始化 如: int example = 100;
 BOOL    g_bIsFace = TRUE;//要共享的数据,注意:要往节中放置一个变量,这个变量必须已经初始化 如: int example = 100;
+HHOOK   g_hHook = NULL;//要共享的数据,注意:要往节中放置一个变量,这个变量必须已经初始化 如: int example = 100;
 
 #pragma data_seg()	//--节结束
 
 //设置节共享:
 #pragma comment(linker, "/section:MyJx3Sec,RWS")
 
-
-HWND g_hWgDlg = NULL;
 
 DWORD GetLuaState()
 {
@@ -95,33 +94,86 @@ void OnButtionTms()
     }
 }
 
-WNDPROC OldProc;
-#define  WM_LOAD            WM_USER + 500
-#define  WM_RUN           WM_USER + 501
-#define  WM_TMS             WM_USER + 502
+BOOL        g_IsWork = TRUE;
+BOOL        g_bIsFirst = TRUE;
+HANDLE      g_h[2] = {NULL, NULL};
+HMODULE     g_hModule = NULL;
+HWND        g_hWgDlg = NULL;
 
-LRESULT CALLBACK MyClassProc(HWND hwnd, UINT message, WPARAM wPraram, LPARAM lParam)
+//初始化环境
+void SetWork()
 {
-    switch (message) {
+    try {
+        lua_State* L = NULL;
+        L = (lua_State*)GetLuaState();
+        luaL_dostring(L, "Martin_Macro.SetWork()"); 	
+    } catch (...) {
+    }
+
+    if (g_bIsFirst == FALSE) {
+        g_IsWork = FALSE;
+        WaitForMultipleObjects(2, g_h, TRUE, INFINITE);
+        CloseHandle(g_h[0]);
+        CloseHandle(g_h[1]);
+    }
+
+    if (g_hWgDlg != NULL) {
+        ::SendMessage(g_hWgDlg, WM_COMMAND, IDCANCEL, NULL);
+    }
+}
+
+#define  WM_LOAD            WM_USER + 500
+#define  WM_RUN             WM_USER + 501
+#define  WM_TMS             WM_USER + 502
+#define  WM_SETWORK         WM_USER + 503
+
+BOOL CALLBACK MsgProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam )
+{
+    switch (UMsg) {
+    case WM_INITDIALOG :
+        return TRUE;
+
     case WM_LOAD:
         OnButtionLoad();
-        return 0;
+        return TRUE;
 
     case WM_RUN:
         OnButtionRun();
-        return 0;
+        return TRUE;
 
     case WM_TMS:
         OnButtionTms();
-        return 0;
-    }
+        return TRUE;
 
-    return CallWindowProc(OldProc, hwnd, message, wPraram, lParam);
+    case WM_SETWORK:
+        SetWork();
+        return TRUE;
+
+    case WM_NCDESTROY:
+        if (g_hHook != NULL) {
+            UnhookWindowsHookEx(g_hHook);
+            g_hHook = NULL;
+        }
+
+        if (g_hModule != NULL) {
+            ::CloseHandle(::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, g_hModule, 0, NULL));
+        }
+        return TRUE;
+
+    case WM_COMMAND :
+        switch (LOWORD (wParam)) {
+        case IDCANCEL:
+            DestroyWindow(hwndDlg);
+            g_hWgDlg = NULL;
+            return TRUE;
+        }
+    }
+    return FALSE ;
 }
 
 unsigned int __stdcall ScriptRun(PVOID pM)  
 {
-    while(true) {
+    while(g_IsWork) {
         if (GetKeyState(g_start) < 0) {    //按下1键状态
             if (g_hWgDlg != NULL) {
                 ::SendMessage(g_hWgDlg, WM_RUN, NULL, NULL);
@@ -136,7 +188,7 @@ unsigned int __stdcall ScriptRun(PVOID pM)
 
 unsigned int __stdcall TuoMasi(PVOID pM)  
 {
-    while(true) {
+    while(g_IsWork) {
         if (g_bIsFace) {
             if (GetKeyState(g_start) < 0) {    //按下Q键状态
                 if (g_hWgDlg != NULL) {
@@ -150,9 +202,6 @@ unsigned int __stdcall TuoMasi(PVOID pM)
     return  0;
 }
 
-BOOL g_bIsFirst = TRUE;
-extern HMODULE g_hModule;
-
 LRESULT CALLBACK GameProc(
     int code,       // hook code
     WPARAM wParam,  // virtual-key code == VK_HOME
@@ -162,18 +211,10 @@ LRESULT CALLBACK GameProc(
     if (g_bIsFirst) {
         if (GetKeyState(VK_HOME) < 0) {    //按下HOME键	
             if (g_hWgDlg == NULL) {
-                g_hWgDlg = martin->GetGameHwnd();
-                if (g_hWgDlg == NULL) {
-                    martin->MsgBox(TEXT("提示"), TEXT("加载失败!!请重启游戏!!"));
-                } else {
-                    martin->Debug(TEXT("0x%X"), g_hWgDlg);
-                    ::CloseHandle((HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL));
-                    ::CloseHandle((HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL));
-                    OldProc = (WNDPROC)SetWindowLong(g_hWgDlg, GWL_WNDPROC, (LONG)MyClassProc);
-                    //martin->ModuleHide(g_hModule);
+                    g_hWgDlg = CreateDialog(g_hModule, TEXT("MSG"), NULL, MsgProc);
+                    g_h[0] = (HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL);
+                    g_h[1] = (HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL);
                     g_bIsFirst = FALSE;
-                }
-
             }
         }
     }
@@ -197,26 +238,29 @@ extern "C" __declspec(dllexport) void SetHook();
 extern "C" __declspec(dllexport) void SetStart(int);
 extern "C" __declspec(dllexport) void SetFace(BOOL);
 
-
 //安装钩子
 void SetHook()
 {
-    //获取游戏主线程ID号
-    HWND h = ::FindWindow(NULL,L"剑侠情缘网络版叁PakV3");
-    if (h == NULL) {
-        martin->MsgBox(TEXT("提示"), TEXT("请先打开游戏!!"));
-        return;
+    if (g_hHook == NULL) {
+        //获取游戏主线程ID号
+        HWND h = ::FindWindow(NULL,L"剑侠情缘网络版叁PakV3");
+        if (h == NULL) {
+            martin->MsgBox(TEXT("提示"), TEXT("请先打开游戏!!"));
+            return;
+        }
+
+        DWORD pid = NULL;
+        DWORD tid = GetWindowThreadProcessId(h, &pid);
+
+        g_hHook = SetWindowsHookEx(
+            WH_KEYBOARD,        // hook type
+            GameProc,     // hook procedure
+            GetModuleHandle(TEXT("Jx3Server.dll")),    // handle to application instance
+            tid	 // thread identifier
+            );
+    } else {
+        martin->MsgBox(TEXT("提示"), TEXT("已经开始邪恶, 请不要重复开始."));
     }
-
-    DWORD pid = NULL;
-    DWORD tid = GetWindowThreadProcessId(h, &pid);
-
-    SetWindowsHookEx(
-        WH_KEYBOARD,        // hook type
-        GameProc,     // hook procedure
-        GetModuleHandle(TEXT("Jx3Server.dll")),    // handle to application instance
-        tid	 // thread identifier
-        );
 }
 
 //设置按键

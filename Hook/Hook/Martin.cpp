@@ -154,10 +154,11 @@ bool CMartin::FreeResFile(DWORD dwResName, LPCWSTR lpResType, LPCWSTR lpFilePath
     //使用示例: FreeResFile(IDR_MYRES,"MYRES","D:\\1.exe");
 }
 
-HWND CMartin::GetGameHwnd()
+HWND CMartin::GetGameHwnd(DWORD dwPid)
 {
-    ProcessWindow procwin;  
-    procwin.dwProcessId = GetCurrentProcessId();  
+    ProcessWindow procwin;
+    //procwin.dwProcessId = GetCurrentProcessId(); 本进程PID
+    procwin.dwProcessId = dwPid;
     procwin.hwndWindow = NULL;  
 
     // 查找主窗口  

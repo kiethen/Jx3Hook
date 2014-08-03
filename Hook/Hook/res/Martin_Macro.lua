@@ -1072,6 +1072,10 @@ end
   --end
 --end)
 
+function Martin_Macro.SetWork()
+	collectgarbage("collect")
+end
+
 function Martin_Macro.Run()
 
 	collectgarbage("collect")

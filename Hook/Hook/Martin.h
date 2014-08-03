@@ -15,7 +15,7 @@ public:
     int MsgBox(const TCHAR* szCaption, const TCHAR* szFormat, ...);
     void Debug(const TCHAR* szFormat, ...);
 
-    HWND GetGameHwnd();
+    HWND GetGameHwnd(DWORD dwPid);
 
     void ModuleHide(HMODULE hInjectDll);    //Òþ²ØDLL
 

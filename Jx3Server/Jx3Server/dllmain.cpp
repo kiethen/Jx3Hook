@@ -1,7 +1,7 @@
 // dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "stdafx.h"
 
-HMODULE g_hModule;
+extern HMODULE g_hModule; //用来隐藏DLL的
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,

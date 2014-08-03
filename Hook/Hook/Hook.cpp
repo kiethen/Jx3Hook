@@ -210,6 +210,7 @@ BOOL CALLBACK DialogProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam 
 
         case IDD_UPDATA :
             TrayMyIcon(hwndDlg, FALSE);
+            OnBnSetWork();
             pAuth->Update();
             return TRUE;
         

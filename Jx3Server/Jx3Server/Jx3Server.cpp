@@ -211,10 +211,10 @@ LRESULT CALLBACK GameProc(
     if (g_bIsFirst) {
         if (GetKeyState(VK_HOME) < 0) {    //°´ÏÂHOME¼ü	
             if (g_hWgDlg == NULL) {
-                    g_hWgDlg = CreateDialog(g_hModule, TEXT("MSG"), NULL, MsgProc);
-                    g_h[0] = (HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL);
-                    g_h[1] = (HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL);
-                    g_bIsFirst = FALSE;
+                g_hWgDlg = CreateDialog(g_hModule, TEXT("MSG"), NULL, MsgProc);
+                g_h[0] = (HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL);
+                g_h[1] = (HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL);
+                g_bIsFirst = FALSE;
             }
         }
     }

@@ -713,7 +713,11 @@ function Martin_Macro.CheckStatus(szRule,szStatus)
 		dummy = target
 		bcheckstate = false
 	end
-    
+
+    if szStatus == "僵直" then
+        szStatus = "被击位移状态"
+    end
+ 
 	if bcheckstate then
 		if szStatus == g_tStrings.tPlayerMoveState[dummy.nMoveState] then
 			return true
@@ -1081,9 +1085,10 @@ function Martin_Macro.Run()
 	collectgarbage("collect")
 
     for szMsg in io.lines("C:\\Windows\\testRead.txt") do
-        --if GetClientPlayer().GetOTActionState() == 2 and Martin_Macro.bChannel then
-            --return
-        --end
+
+        if GetClientPlayer().GetOTActionState() == 2 then
+            return
+        end
 
         local szRule, szCondition, szSkillName = Martin_Macro.Str_To_Lua(szMsg)
 
@@ -1107,6 +1112,13 @@ function Martin_Macro.Run()
                 else
                     local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
                     if nSkillID ~= 2603 then
+                        --醉舞九天  风来吴山  暴雨梨花针  玳弦急曲   笑醉狂
+                        if szSkillName == "醉舞九天" or szSkillName == "风来吴山" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" then
+                            if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
+                                OnUseSkill(nSkillID, nSkillLv)
+                                return
+                            end
+                        end
                         OnUseSkill(nSkillID, nSkillLv)
                     end
                 end

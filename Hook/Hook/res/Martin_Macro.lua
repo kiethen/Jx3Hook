@@ -894,11 +894,11 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
     if szKeyName ~= "" then
         if szKeyName:find("distance") ~= nil or szKeyName:find("Distance") ~= nil then
             local szCurrentWord = ""
-            local tStackDataTable = {"=", ""}
+            local tStackDataTable = {"", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
-                    tStackDataTable[1] = ch
+                if ch == ">" or ch == "=" or ch == "<" then
+                    tStackDataTable[1] = tStackDataTable[1] .. ch
                     szCurrentWord = ""
                 else
                     szCurrentWord = szCurrentWord .. ch
@@ -911,12 +911,12 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szKeyName:find("life") ~= nil or szKeyName:find("mana") ~= nil or szKeyName:find("power") ~= nil or szKeyName:find("rage") ~= nil or szKeyName:find("dance") ~= nil or szKeyName:find("energy") ~= nil or szKeyName:find("sun") ~= nil or szKeyName:find("moon") ~= nil or szKeyName:find("flypower") ~= nil then
             local szCurrentWord = ""
-            local tStackDataTable = {"", "=", ""}
+            local tStackDataTable = {"", "", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
-                    tStackDataTable[1] = szCurrentWord
-                    tStackDataTable[2] = ch
+                if ch == ">" or ch == "=" or ch == "<" then
+                    tStackDataTable[1] = tStackDataTable[1] .. szCurrentWord
+                    tStackDataTable[2] = tStackDataTable[2] .. ch
                     szCurrentWord = ""
                 else
                     szCurrentWord = szCurrentWord .. ch
@@ -929,12 +929,12 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szKeyName:find("face") ~= nil then
             local szCurrentWord = ""
-            local tStackDataTable = {"", "=", ""}
+            local tStackDataTable = {"", "", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
-                    tStackDataTable[1] = szCurrentWord
-                    tStackDataTable[2] = ch
+                if ch == ">" or ch == "=" or ch == "<" then
+                    tStackDataTable[1] = tStackDataTable[1] .. szCurrentWord
+                    tStackDataTable[2] = tStackDataTable[2] .. ch
                     szCurrentWord = ""
                 else
                     szCurrentWord = szCurrentWord .. ch
@@ -947,12 +947,12 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("bufftime") ~= nil then      
             local szCurrentWord = ""
-            local tStackDataTable = {szRule, "", "=", ""}
+            local tStackDataTable = {szRule, "", "", ""}
             for i = 1, #szKeyName do
                 local ch = szKeyName:sub(i, i)
-                if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
-                    tStackDataTable[2] = szCurrentWord
-                    tStackDataTable[3] = ch
+                if ch == ">" or ch == "=" or ch == "<" then
+                    tStackDataTable[2] = tStackDataTable[2] .. szCurrentWord
+                    tStackDataTable[3] = tStackDataTable[3] .. ch
                     szCurrentWord = ""
                 else
                     szCurrentWord = szCurrentWord .. ch
@@ -1001,12 +1001,12 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("cdtime") ~= nil then
                 local szCurrentWord = ""
-                local tStackDataTable = {"", "=", 0}
+                local tStackDataTable = {"", "", 0}
                 for i = 1, #szKeyName do
                     local ch = szKeyName:sub(i, i)
-                    if ch == ">" or ch == "=" or ch == "<" or ch == "<=" or ch == ">=" then
-                        tStackDataTable[1] = szCurrentWord
-                        tStackDataTable[2] = ch
+                    if ch == ">" or ch == "=" or ch == "<" then
+                        tStackDataTable[1] = tStackDataTable[1] .. szCurrentWord
+                        tStackDataTable[2] = tStackDataTable[2] .. ch
                         szCurrentWord = ""
                     else
                         szCurrentWord = szCurrentWord .. ch
@@ -1091,7 +1091,7 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 		elseif ch == "," or ch == "£¬" then
             CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))
             szRule = szCurrentWord
-            tStackDataTable[nCurrentStackLevel][2] = "+"
+            --tStackDataTable[nCurrentStackLevel][2] = "+"
             tStackDataTable[nCurrentStackLevel][3] = szRule
 			if tStackDataTable[1][1] == false then
                 return tStackDataTable[1][1]

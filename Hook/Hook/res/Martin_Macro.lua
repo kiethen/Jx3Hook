@@ -1,3 +1,5 @@
+collectgarbage("collect")
+
 Martin_Macro = {}
 --Martin_Macro.bChannel = false
 --Martin_Macro.nStepper = 0
@@ -1089,6 +1091,7 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 		elseif ch == "," or ch == "£¬" then
             CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))
             szRule = szCurrentWord
+            tStackDataTable[nCurrentStackLevel][2] = "+"
             tStackDataTable[nCurrentStackLevel][3] = szRule
 			if tStackDataTable[1][1] == false then
                 return tStackDataTable[1][1]

@@ -1036,7 +1036,7 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 	local szCurrentWord = ""
 
 	local nCurrentStackLevel = 1;						    -- 处理过程中的当前栈级
-	local tStackDataTable = {[1] = {true, "+",""}}			-- 用来保存不同栈级下的临时结果, 每个栈级有两个值, 分别是 {当前值, 下一次计算符号}
+	local tStackDataTable = {[1] = {true, "+", ""}}			-- 用来保存不同栈级下的临时结果, 每个栈级有两个值, 分别是 {当前值, 下一次计算符号}
 
 	local CalculateStackResult = function(bResult)
 		if tStackDataTable[nCurrentStackLevel][2] == "+" then
@@ -1081,7 +1081,10 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 		elseif ch == "|" then
 			CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))
 			tStackDataTable[nCurrentStackLevel][2] = "|"
-
+            if tStackDataTable[nCurrentStackLevel][3]:find("no") then
+                tStackDataTable[nCurrentStackLevel][2] = "+"
+            end
+            
         -- 遇到一个 , 标记,计算之前的结果, 为假则直接返回
 		elseif ch == "," or ch == "，" then
             CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))

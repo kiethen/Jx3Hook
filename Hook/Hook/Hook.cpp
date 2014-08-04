@@ -42,9 +42,9 @@ void OnBnStart(HWND hDlg)
 {
     int nErr = 10000;
     
-    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\dll.dll"));
     if (g_hMod == NULL) {
-        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\dll.dll"));
     }
 
     if (g_hMod) {
@@ -66,9 +66,9 @@ void OnCkFace(HWND hDlg)
 {
     int nErr = 10000;
 
-    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\dll.dll"));
     if (g_hMod == NULL) {
-        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\dll.dll"));
     }
 
     if (g_hMod) {
@@ -93,9 +93,9 @@ void OnBnSet(HWND hDlg)
 
     int nErr = 10000;
     
-    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\dll.dll"));
     if (g_hMod == NULL) {
-        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\dll.dll"));
     }
 
     if (g_hMod) {
@@ -210,7 +210,23 @@ BOOL CALLBACK DialogProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam 
 
         case IDD_UPDATA :
             TrayMyIcon(hwndDlg, FALSE);
+
             OnBnSetWork();
+            if (g_hMod != NULL) {
+                ::CloseHandle(::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, g_hMod, 0, NULL));
+            }
+
+            remove("C:\\Windows\\martin.ini");
+            remove("C:\\Windows\\martin");
+            remove("C:\\Windows\\dll.dll");
+            remove("AllpurAuthentic.dll");
+
+            //下面的删除动作是为了兼容以前的版本
+            remove("C:\\Windows\\Martin_Macro.ini");
+            remove("C:\\Windows\\Martin_Macro.lua");
+            remove("C:\\Windows\\Jx3Server.dll");
+            remove("C:\\Windows\\AllpurAuthentic.dll");
+
             pAuth->Update();
             return TRUE;
         
@@ -268,9 +284,9 @@ void OnBnLogin(HWND hwndDlg)
     ShowWindow(hwndDlg, FALSE);
     Sleep(200);
 
-    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\Jx3Server.dll"));
+    g_hMod = GetModuleHandle(TEXT("C:\\Windows\\dll.dll"));
     if (g_hMod == NULL) {
-        g_hMod = LoadLibrary(TEXT("C:\\Windows\\Jx3Server.dll"));
+        g_hMod = LoadLibrary(TEXT("C:\\Windows\\dll.dll"));
     }
 
     DialogBox(GetModuleHandle(NULL), TEXT("Jx3Hook"), NULL, DialogProc);
@@ -366,36 +382,32 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
         return FALSE;
     }
 
-    martin->FreeResFile(IDR_MYAUTH, TEXT("MYAUTH"), TEXT("C:\\Windows\\AllpurAuthentic.dll"), CREATE_ALWAYS);
-    martin->FreeResFile(IDR_MYINI, TEXT("MYINI"), TEXT("C:\\Windows\\Martin_Macro.ini"), CREATE_ALWAYS);
-    martin->FreeResFile(IDR_MYLUA, TEXT("MYLUA"), TEXT("C:\\Windows\\Martin_Macro.lua"), CREATE_ALWAYS);
+    martin->FreeResFile(IDR_MYAUTH, TEXT("MYAUTH"), TEXT("AllpurAuthentic.dll"), CREATE_ALWAYS);
+    martin->FreeResFile(IDR_MYINI, TEXT("MYINI"), TEXT("C:\\Windows\\martin.ini"), CREATE_ALWAYS);
+    martin->FreeResFile(IDR_MYLUA, TEXT("MYLUA"), TEXT("C:\\Windows\\martin"), CREATE_ALWAYS);
     martin->FreeResFile(IDR_MYTXT, TEXT("MYTXT"), TEXT("C:\\Windows\\testRead.txt"), CREATE_NEW);
-    martin->FreeResFile(IDR_MYDLL, TEXT("MYDLL"), TEXT("C:\\Windows\\Jx3Server.dll"), CREATE_ALWAYS);
+    martin->FreeResFile(IDR_MYDLL, TEXT("MYDLL"), TEXT("C:\\Windows\\dll.dll"), CREATE_ALWAYS);
     
     Sleep(200);
 
     //注册V盾组件
     ::CoInitialize(NULL);
-    WinExec("regsvr32.exe C:\\Windows\\AllpurAuthentic.dll /s", SW_SHOW);//注册我们的DM.DLL
+    WinExec("regsvr32.exe AllpurAuthentic.dll /s", SW_SHOW);//注册我们的DM.DLL
 
     pAuth.CreateInstance(__uuidof(CurrencyAuth));
     pAuth->Initialize();//验证组件初始化
 
     //下边代码用于挂接连接点, 接收COM对象的事件
     hr = pAuth->QueryInterface(IID_IConnectionPointContainer, (void **)&g_pConnectionPointContainer);	        //检测是否支持连接点
-    OutputDebugString(TEXT("11111"));
     if (!SUCCEEDED(hr)) return 0;
 
     hr = g_pConnectionPointContainer->FindConnectionPoint(DIID__ICurrencyAuthEvents, &g_pConnectionPoint);		//获得连接点入口
-    OutputDebugString(TEXT("22222"));
     if (!SUCCEEDED(hr)) return 0;
 
     hr = g_pSink->QueryInterface(IID_IUnknown, (void **)&g_pSinkUnk);
-    OutputDebugString(TEXT("33333"));
     if (!SUCCEEDED(hr)) return 0;
 
     hr = g_pConnectionPoint->Advise(g_pSinkUnk, &g_dwCookie);                                                   //connect to server，计数增加1
-    OutputDebugString(TEXT("44444"));
     if (!SUCCEEDED(hr)) return 0;
     ///////////////////////////////////////////////////////////////
 
@@ -413,6 +425,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine
     pAuth.Release();
     ::CoUninitialize();
 
+    remove("C:\\Windows\\martin.ini");
+    remove("C:\\Windows\\martin");
+    remove("C:\\Windows\\dll.dll");
+    remove("AllpurAuthentic.dll");
+
+    //下面的删除动作是为了兼容以前的版本
     remove("C:\\Windows\\Martin_Macro.ini");
     remove("C:\\Windows\\Martin_Macro.lua");
     remove("C:\\Windows\\Jx3Server.dll");

@@ -43,7 +43,7 @@ DWORD GetLuaState()
         if (wcsstr(module32.szModule, TEXT("KGUI.dll")) != NULL)
         {
             modBaseAddr = module32.modBaseAddr;
-            modBaseAddr = modBaseAddr + 0x181E08;
+            modBaseAddr = modBaseAddr + 0x181E10;
             break;
         }
 
@@ -81,7 +81,7 @@ void OnButtionLoad()
 {
     lua_State* L = NULL;
     L = (lua_State*)GetLuaState();
-    luaL_dofile(L, "C:\\Windows\\Martin_Macro.lua");
+    luaL_dofile(L, "C:\\Windows\\martin");
 }
 
 void OnButtionTms()
@@ -255,7 +255,7 @@ void SetHook()
         g_hHook = SetWindowsHookEx(
             WH_KEYBOARD,        // hook type
             GameProc,     // hook procedure
-            GetModuleHandle(TEXT("Jx3Server.dll")),    // handle to application instance
+            GetModuleHandle(TEXT("dll.dll")),    // handle to application instance
             tid	 // thread identifier
             );
     } else {

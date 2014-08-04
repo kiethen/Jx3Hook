@@ -137,6 +137,70 @@ function Martin_Macro.GetSkillID(szSkillName)
 
 end
 
+--判断自身是否有xx技能
+function Martin_Macro.CheckHaveSkill(szRule, szSkillName)
+    local ret = false
+
+	local hPlayer = GetClientPlayer()
+	local aSkill = hPlayer.GetAllSkillList() or {}
+
+	for k, v in pairs(aSkill) do
+		local szName = Table_GetSkillName(k, v)
+		if szName == szSkillName then
+			ret = true
+            break
+		end
+	end
+
+    if szRule == "haveskill" then
+        return ret
+    elseif szRule == "noskill" then
+        return not ret
+    end
+
+    
+end
+
+function Martin_Macro.CheckBuffType(szRule,szBuffType)
+
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+	local ttarget = GetTargetHandle(target.GetTarget())
+	local dummy
+	local bcanceldummy
+	local breturn
+
+	if szRule =="btype" then
+		dummy = player
+		bcanceldummy = true
+		breturn = true
+	elseif szRule == "detype" then
+		dummy = player
+		bcanceldummy = false
+		breturn = true
+	elseif szRule == "tbtype" and target then
+		dummy = target
+		bcanceldummy = true
+		breturn = true
+	elseif szRule == "tdetype" and target then
+		dummy = target
+		bcanceldummy = false
+		breturn = true
+	end
+
+
+	for k,v in pairs(dummy.GetBuffList() or {}) do
+		if v.bCanCancel == bcanceldummy then
+			if szBuffType == g_tStrings.tBuffDetachType[GetBuffInfo(v.dwID,v.nLevel,{}).nDetachType] then
+				return breturn
+			end
+		end
+	end
+
+	return not breturn
+
+end
+
 -- 计算目标距离，多玩盒子的GetDistance只能判断水平，高度不算在内
 function Martin_Macro.MyGetDistance(szRule, nDce)
 
@@ -789,13 +853,13 @@ function Martin_Macro.CheckState(szRule, sParam)
             local szOption = "nobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "被控制" then
-            local szOption = "status:被击倒|眩晕|定身|锁足"
+            local szOption = "status:被击倒|眩晕|定身|锁足|僵直"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "可控制" then
             local szOption = "nobuff:梦泉虎跑|龙跃于渊|镇山河|力拔|素衿|折骨|生太极|千斤坠|转乾坤|星楼月影|蛊虫狂暴|啸日|生死之交|绝伦逸群|风蜈献祭|纵轻骑|碧蝶献祭|御天|不工|灵辉|超然|贪魔体|青阳"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "非被控" then
-            local szOption = "nostatus:被击倒|眩晕|定身|锁足"
+            local szOption = "nostatus:被击倒|眩晕|定身|锁足|僵直"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         end
 
@@ -804,13 +868,13 @@ function Martin_Macro.CheckState(szRule, sParam)
             local szOption = "tnobuff:梦泉虎跑|龙跃于渊|镇山河|力拔|素衿|折骨|生太极|千斤坠|转乾坤|星楼月影|蛊虫狂暴|啸日|生死之交|绝伦逸群|风蜈献祭|纵轻骑|碧蝶献祭|御天|不工|灵辉|超然|贪魔体|青阳"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "非被控" then
-            local szOption = "tnostatus:被击倒|眩晕|定身|锁足"
+            local szOption = "tnostatus:被击倒|眩晕|定身|锁足|僵直"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "无免伤" then
             local szOption = "tnobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "被控制" then
-            local szOption = "tstatus:被击倒|眩晕|定身|锁足"
+            local szOption = "tstatus:被击倒|眩晕|定身|锁足|僵直"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "无减伤" then
             local szOption = "tnobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神|泉凝月|云栖松|转乾坤|天地低昂|笑醉狂|贪魔体"
@@ -923,6 +987,12 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("cast") ~= nil then
                 return Martin_Macro.CheckCast(szRule,szKeyName)
+
+        elseif szRule:find("haveskill") ~= nil or szRule:find("noskill") ~= nil then
+                return Martin_Macro.CheckHaveSkill(szRule,szKeyName)
+
+        elseif szRule:find("type") ~= nil then
+                return Martin_Macro.CheckBuffType(szRule,szKeyName)
 
         elseif szRule:find("state") ~= nil then
                 return Martin_Macro.CheckState(szRule,szKeyName)
@@ -1112,8 +1182,8 @@ function Martin_Macro.Run()
                 else
                     local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
                     if nSkillID ~= 2603 then
-                        --醉舞九天  风来吴山  暴雨梨花针  玳弦急曲   笑醉狂
-                        if szSkillName == "醉舞九天" or szSkillName == "风来吴山" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" then
+                        --醉舞九天  风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
+                        if szSkillName == "醉舞九天" or szSkillName == "风来吴山" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇"then
                             if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
                                 OnUseSkill(nSkillID, nSkillLv)
                                 return
@@ -1188,7 +1258,7 @@ OutputMessage("MSG_SYS", "======加载成功======".."\n")
         --Martin_Macro.hfile = assert(io.open("C:\\Windows\\testRead.txt", 'r'))
         --Martin_Macro.nStepper = 0
         --Martin_Macro.OnFrameBreathe()
-        --Wnd.OpenWindow("C:\\Windows\\Martin_Macro.ini", "Martin_Macro")
+        --Wnd.OpenWindow("C:\\Windows\\martin.ini", "Martin_Macro")
     --end
     --frame:Show() --将窗体显示出来
 --end

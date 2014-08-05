@@ -14,7 +14,6 @@ function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
 
 	local player = GetClientPlayer()
 	local ttp,tid = player.GetTarget()
-	local tplayer = GetTargetHandle(ttp,tid)
 
 	if player.dwID == PlayerID then
         if Table_GetSkillName(SkillID,SkillLv) ~= nil and Table_GetSkillName(SkillID,SkillLv) ~= "" then
@@ -77,7 +76,7 @@ function Martin_Macro.CheckCast(szRule,szKeyName)
 end
 
 
---根据指定BUFF ID判断对象是否有BUFF
+--根据指定BUFF ID判断对象是否有BUFF 返回BUFF层数
 function Martin_Macro.BuffChackById(hPlayer, dwBUFFID)
 
 	if hPlayer then
@@ -118,6 +117,34 @@ function Martin_Macro.BuffChackByName(hPlayer, szBuffName, bMbuff)
 
 	end
     return false
+
+end
+
+--根据指定BUFF Name 返回BUFF层数
+function Martin_Macro.ChackBuffByNameRetNum(hPlayer, szBuffName, bMbuff)
+
+	if hPlayer then
+        if bMbuff == false then
+            for i = 1,hPlayer.GetBuffCount(),1 do
+                local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = hPlayer.GetBuff(i - 1)
+                if Table_GetBuffName(dwID, nLevel) == szBuffName then
+                     return nStackNum
+                end
+            end
+        else
+            for i = 1,hPlayer.GetBuffCount(),1 do
+                local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = hPlayer.GetBuff(i - 1)
+                if GetClientPlayer().dwID == dwSkillSrcID then
+                    if Table_GetBuffName(dwID, nLevel) == szBuffName then
+                         return nStackNum
+                    end
+                end
+            end
+        end
+    
+
+	end
+    return 0
 
 end
 
@@ -162,46 +189,6 @@ end
 
     
 --end
-
-function Martin_Macro.CheckBuffType(szRule,szBuffType)
-
-	local player = GetClientPlayer()
-	local target = GetTargetHandle(player.GetTarget())
-	local ttarget = GetTargetHandle(target.GetTarget())
-	local dummy
-	local bcanceldummy
-	local breturn
-
-	if szRule =="btype" then
-		dummy = player
-		bcanceldummy = true
-		breturn = true
-	elseif szRule == "detype" then
-		dummy = player
-		bcanceldummy = false
-		breturn = true
-	elseif szRule == "tbtype" and target then
-		dummy = target
-		bcanceldummy = true
-		breturn = true
-	elseif szRule == "tdetype" and target then
-		dummy = target
-		bcanceldummy = false
-		breturn = true
-	end
-
-
-	for k,v in pairs(dummy.GetBuffList() or {}) do
-		if v.bCanCancel == bcanceldummy then
-			if szBuffType == g_tStrings.tBuffDetachType[GetBuffInfo(v.dwID,v.nLevel,{}).nDetachType] then
-				return breturn
-			end
-		end
-	end
-
-	return not breturn
-
-end
 
 -- 计算目标距离，多玩盒子的GetDistance只能判断水平，高度不算在内
 function Martin_Macro.MyGetDistance(szRule, nDce)
@@ -351,31 +338,115 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 end
 
 --buff类
-function Martin_Macro.CheckBuff(szRule,szBuffName)
+function Martin_Macro.CheckBuff(szRule,szBuffName,szSym,szNum)
 
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
+    local dummy
+    local bMbuff = false
+    local breturn
 
-	if szRule =="buff" then
-        return Martin_Macro.BuffChackByName(player, szBuffName, false)
+    if szRule == "buff" then
+        dummy = player
+        breturn = true
 
-	elseif szRule =="nobuff" then
-        return not Martin_Macro.BuffChackByName(player, szBuffName, false)
+    elseif szRule == "nobuff" then
+        dummy = player
+        breturn = false
 
-	elseif szRule == "tbuff" and target then
-        return Martin_Macro.BuffChackByName(target, szBuffName, false)
+    elseif szRule == "tbuff" then
+        dummy = target
+        breturn = true
 
-	elseif szRule == "tnobuff" and target then
-        return not Martin_Macro.BuffChackByName(target, szBuffName, false)
+    elseif szRule == "tnobuff" then
+        dummy = target
+        breturn = false
 
-    elseif szRule == "mbuff" and target then
-        return Martin_Macro.BuffChackByName(target, szBuffName, true)
+    elseif szRule == "mbuff" then
+        dummy = target
+        bMbuff = true
+        breturn = true
 
-    elseif szRule == "nombuff" and target then
-        return not Martin_Macro.BuffChackByName(target, szBuffName, true)
+    elseif szRule == "nombuff" then
+        dummy = target
+        bMbuff = true
+        breturn = false
+
+    end
+
+    if szSym == "" then
+        if Martin_Macro.BuffChackByName(dummy, szBuffName, bMbuff) then
+            return breturn
+        end
+        
+    else
+        --判断层数
+        local nStackNum = Martin_Macro.ChackBuffByNameRetNum(dummy, szBuffName, bMbuff)
+
+        if szSym == ">" then
+            if nStackNum > tonumber(szNum) then
+                return breturn
+            end
+        elseif szSym == "<" then
+            if nStackNum < tonumber(szNum) then
+                return breturn
+            end
+        elseif szSym == "=" then
+            if nStackNum == tonumber(szNum) then
+                return breturn
+            end
+        elseif szSym == "<=" then
+            if nStackNum <= tonumber(szNum) then
+                return breturn
+            end
+        elseif szSym == ">=" then
+            if nStackNum >= tonumber(szNum) then
+                return breturn
+            end
+        end
+    end
+
+    return not breturn
+end
+
+function Martin_Macro.CheckBuffType(szRule,szBuffType)
+
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+	local dummy
+	local bcanceldummy
+	local breturn
+    
+	if szRule =="btype" then
+		dummy = player
+		bcanceldummy = true --增益 , 可自己取消
+		breturn = true
+	elseif szRule == "detype" then
+		dummy = player
+		bcanceldummy = false --减益 , 不可自己取消
+		breturn = true
+	elseif szRule == "tbtype" and target then
+		dummy = target
+		bcanceldummy = true
+		breturn = true
+	elseif szRule == "tdetype" and target then
+		dummy = target
+		bcanceldummy = false
+		breturn = true
 	end
 
-    return false
+    for i = 1,dummy.GetBuffCount(),1 do
+        local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
+        if bCanCancel == bcanceldummy then
+            if g_tStrings.tBuffDetachType[GetBuffInfo(dwID,nLevel,{}).nDetachType] ~= nil and g_tStrings.tBuffDetachType[GetBuffInfo(dwID,nLevel,{}).nDetachType] ~= "" then
+    			if g_tStrings.tBuffDetachType[GetBuffInfo(dwID,nLevel,{}).nDetachType]:find(szBuffType) then
+				    return breturn
+			    end           
+            end
+        end
+    end
+
+	return not breturn
 
 end
 
@@ -620,7 +691,7 @@ function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 		dummycurrent = player.nCurrentRage
 		dummymax = player.nMaxRage
 	elseif szRule == "dance" then
-        dummycurrent = Martin_Macro.BuffChackById(player, 409)
+        dummycurrent = Martin_Macro.BuffChackById(player, 409) -- 剑舞
 		dummymax = 10
 	elseif szRule == "energy" then
 		dummycurrent = player.nCurrentEnergy
@@ -704,13 +775,17 @@ function Martin_Macro.CheckName(szRule,szValue)
         end
 
     elseif szRule == "ttname" then
-        if ttarget.szName == szName then
-            return true
+        if ttarget then
+            if ttarget.szName == szName then
+                return true
+            end
         end
 
     elseif szRule == "ttnoname" then
-        if ttarget.szName ~= szName then
-            return true
+        if ttarget then
+            if ttarget.szName ~= szName then
+                return true
+            end
         end
     end
     
@@ -783,13 +858,32 @@ function Martin_Macro.CheckStatus(szRule,szStatus)
     if szStatus == "僵直" then
         szStatus = "被击位移状态"
     end
+
+    --[MOVE_STATE.ON_FREEZE]			= "定身",
+    --[MOVE_STATE.ON_ENTRAP]			= "定身",锁足
  
 	if bcheckstate then
-		if szStatus == g_tStrings.tPlayerMoveState[dummy.nMoveState] then
+        if szStatus == "锁足" then
+            if dummy.nMoveState == MOVE_STATE.ON_ENTRAP then
+                return true
+            end
+        elseif szStatus == "定身" then
+            if dummy.nMoveState == MOVE_STATE.ON_FREEZE then
+                return true
+            end
+        elseif szStatus == g_tStrings.tPlayerMoveState[dummy.nMoveState] then
 			return true
-		end
+        end
 	else
-		if szStatus ~= g_tStrings.tPlayerMoveState[dummy.nMoveState] then
+        if szStatus == "锁足" then
+            if dummy.nMoveState ~= MOVE_STATE.ON_ENTRAP then
+                return true
+            end
+        elseif szStatus == "定身" then
+            if dummy.nMoveState ~= MOVE_STATE.ON_FREEZE then
+                return true
+            end
+        elseif szStatus ~= g_tStrings.tPlayerMoveState[dummy.nMoveState] then
 			return true
 		end
 	end
@@ -963,8 +1057,28 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
             end
             return Martin_Macro.CheckBuffTime(tStackDataTable[1], tStackDataTable[2], tStackDataTable[3], tStackDataTable[4])
 
-        elseif szRule:find("buff") ~= nil then
-                return Martin_Macro.CheckBuff(szRule,szKeyName)
+        elseif szRule:find("buff") ~= nil then      
+            local szCurrentWord = ""
+            local tStackDataTable = {szRule, "", "", ""}
+            for i = 1, #szKeyName do
+                local ch = szKeyName:sub(i, i)
+                if ch == ">" or ch == "=" or ch == "<" then
+                    tStackDataTable[2] = tStackDataTable[2] .. szCurrentWord
+                    tStackDataTable[3] = tStackDataTable[3] .. ch
+                    szCurrentWord = ""
+                else
+                    szCurrentWord = szCurrentWord .. ch
+                    if #szKeyName == i then		-- 最后一个字符, 这里要最后计算一次
+                        tStackDataTable[4] = szCurrentWord
+                    end
+                end  
+            end
+            
+            if tStackDataTable[2] == "" then
+                return Martin_Macro.CheckBuff(tStackDataTable[1], tStackDataTable[4], tStackDataTable[2], tStackDataTable[3])
+            else
+                return Martin_Macro.CheckBuff(tStackDataTable[1], tStackDataTable[2], tStackDataTable[3], tStackDataTable[4])
+            end
 
         elseif szRule:find("name") ~= nil then
                 return Martin_Macro.CheckName(szRule,szKeyName)
@@ -1188,8 +1302,8 @@ function Martin_Macro.Run()
                 else
                     local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
                     if nSkillID ~= 2603 then
-                        --醉舞九天  风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
-                        if szSkillName == "醉舞九天" or szSkillName == "风来吴山" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇"then
+                        --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇  
+                        if szSkillName == "醉舞九天" or szSkillName == "凝神聚气" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇" then
                             if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
                                 OnUseSkill(nSkillID, nSkillLv)
                                 return
@@ -1206,7 +1320,6 @@ function Martin_Macro.Run()
                 --Martin_Macro.bChannel = false
             --end          
         end
-
     end
 
         --if GetClientPlayer().GetOTActionState() == 2 and Martin_Macro.bChannel then

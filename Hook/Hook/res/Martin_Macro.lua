@@ -140,28 +140,28 @@ function Martin_Macro.GetSkillID(szSkillName)
 end
 
 --判断自身是否有xx技能
-function Martin_Macro.CheckHaveSkill(szRule, szSkillName)
-    local ret = false
+--function Martin_Macro.CheckHaveSkill(szRule, szSkillName)
+    --local ret = false
 
-	local hPlayer = GetClientPlayer()
-	local aSkill = hPlayer.GetAllSkillList() or {}
+	--local hPlayer = GetClientPlayer()
+	--local aSkill = hPlayer.GetAllSkillList() or {}
 
-	for k, v in pairs(aSkill) do
-		local szName = Table_GetSkillName(k, v)
-		if szName == szSkillName then
-			ret = true
-            break
-		end
-	end
+	--for k, v in pairs(aSkill) do
+		--local szName = Table_GetSkillName(k, v)
+		--if szName == szSkillName then
+			--ret = true
+            --break
+		--end
+	--end
 
-    if szRule == "haveskill" then
-        return ret
-    elseif szRule == "noskill" then
-        return not ret
-    end
+    --if szRule == "haveskill" then
+        --return ret
+    --elseif szRule == "noskill" then
+        --return not ret
+    --end
 
     
-end
+--end
 
 function Martin_Macro.CheckBuffType(szRule,szBuffType)
 
@@ -990,8 +990,8 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
         elseif szRule:find("cast") ~= nil then
                 return Martin_Macro.CheckCast(szRule,szKeyName)
 
-        elseif szRule:find("haveskill") ~= nil or szRule:find("noskill") ~= nil then
-                return Martin_Macro.CheckHaveSkill(szRule,szKeyName)
+        --elseif szRule:find("haveskill") ~= nil or szRule:find("noskill") ~= nil then
+                --return Martin_Macro.CheckHaveSkill(szRule,szKeyName)
 
         elseif szRule:find("type") ~= nil then
                 return Martin_Macro.CheckBuffType(szRule,szKeyName)

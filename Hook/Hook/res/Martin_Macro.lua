@@ -855,8 +855,10 @@ function Martin_Macro.CheckStatus(szRule,szStatus)
 		bcheckstate = false
 	end
 
-    if szStatus == "僵直" then
+    if szStatus == "被僵直" then
         szStatus = "被击位移状态"
+    elseif szStatus == "使僵直" then
+        szStatus = "攻击位移状态"
     end
 
     --[MOVE_STATE.ON_FREEZE]			= "定身",
@@ -983,6 +985,25 @@ function Martin_Macro.CheckState(szRule, sParam)
 
 end
 
+function Martin_Macro.CanUse(sParam)
+
+	local szSkillId = Martin_Macro.GetSkillID(sParam)
+	local szSkillLevel = GetClientPlayer().GetSkillLevel(szSkillId)
+
+	local me, box = GetClientPlayer(), Martin_Macro.hBox
+	if me and box then
+		if szSkillLevel > 0 then
+			box:EnableObject(false)
+			box:SetObjectCoolDown(1)
+			box:SetObject(UI_OBJECT_SKILL, szSkillId, szSkillLevel)
+			UpdataSkillCDProgress(me, box)
+			return box:IsObjectEnable() and not box:IsObjectCoolDown()
+		end
+	end
+	return false
+
+end
+
 function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
     if szKeyName ~= "" then
@@ -1103,6 +1124,9 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("cast") ~= nil then
                 return Martin_Macro.CheckCast(szRule,szKeyName)
+
+        elseif szRule:find("canuse") ~= nil then
+                return Martin_Macro.CanUse(szKeyName)
 
         --elseif szRule:find("haveskill") ~= nil or szRule:find("noskill") ~= nil then
                 --return Martin_Macro.CheckHaveSkill(szRule,szKeyName)
@@ -1270,6 +1294,15 @@ function Martin_Macro.SetWork()
 	collectgarbage("collect")
 end
 
+function Martin_Macro.Follow()
+    local player = GetClientPlayer()
+    local target = GetTargetHandle(player.GetTarget())
+    if target then
+        local x,y,z = Scene_GameWorldPositionToScenePosition(target.nX,target.nY,target.nZ,false)
+        AutoMoveToPoint(x,y,z)
+    end
+end
+
 function Martin_Macro.Run()
 
 	collectgarbage("collect")
@@ -1299,6 +1332,8 @@ function Martin_Macro.Run()
                     end 
                 elseif szSkillName == "跳" then
                     Camera_EnableControl(CONTROL_JUMP, true)
+                elseif szSkillName == "跟随目标" then
+                    Martin_Macro.Follow()
                 else
                     local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
                     if nSkillID ~= 2603 then
@@ -1389,5 +1424,14 @@ OutputMessage("MSG_SYS", "======加载成功======".."\n")
         --Wnd.CloseWindow(frame)
     --end
 --end
+
+function Martin_Macro.OpenWindow()
+    local frame=Station.Lookup("Normal/Martin_Macro") or Wnd.OpenWindow("C:\\Windows\\martin.ini", "Martin_Macro") --定义窗体为frame
+	frame:Hide() --将窗体隐藏出来
+	Martin_Macro.hTotal = frame:Lookup("Wnd_Content", "")
+	Martin_Macro.hBox = Martin_Macro.hTotal:Lookup("Box_1")
+end
+
+Martin_Macro.OpenWindow()
 
 collectgarbage("collect")

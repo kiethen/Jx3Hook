@@ -1,9 +1,7 @@
-﻿生成启动时间为 2014/8/6/星期三 3:02:06。
+﻿生成启动时间为 2014/8/6/星期三 10:40:26。
      1>项目“C:\Users\Martin\Desktop\Jx3Hook\Hook\Hook\Hook.vcxproj”在节点 2 上(build 个目标)。
-     1>PrepareForBuild:
-         正在创建目录“C:\Users\Martin\Desktop\Jx3Hook\Hook\Release\”。
-       InitializeBuildStatus:
-         正在创建“Release\Hook.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+     1>InitializeBuildStatus:
+         正在对“Release\Hook.unsuccessfulbuild”执行 Touch 任务。
        ClCompile:
          所有输出均为最新。
        ResourceCompile:
@@ -25,4 +23,4 @@
 
 生成成功。
 
-已用时间 00:00:01.20
+已用时间 00:00:00.50

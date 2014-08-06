@@ -9,6 +9,57 @@ Martin_Macro.nSkillLevel = 0
 Martin_Macro.tnSkilldwID = 0
 Martin_Macro.tnSkillLevel = 0
 
+--获取周围敌对目标数量
+function Martin_Macro.GetEnemyNum(szMaxR,szSym,szValue)
+
+	local EnemyNum=0
+	local player = GetClientPlayer()
+	if not player then return end
+	for i,v in pairs(GetNearbyPlayerList()) do
+		local hPlayer = GetPlayer(v)
+		if hPlayer and player.dwID ~= hPlayer.dwID then
+			local nDist = math.floor(GetCharacterDistance(player.dwID,v)/64)
+			if nDist < tonumber(szMaxR) then
+				if IsEnemy(player.dwID,hPlayer.dwID) then
+					if hPlayer.nMoveState ~= MOVE_STATE.ON_DEATH then
+						EnemyNum = EnemyNum + 1
+					end
+				end
+			end
+		end
+	end
+	
+    if szSym == "=" then
+        if EnemyNum == tonumber(szValue) then
+            return true
+        end
+        
+    elseif szSym == "<" then
+        if EnemyNum < tonumber(szValue) then
+            return true
+        end
+
+    elseif szSym == "<=" then
+        if EnemyNum <= tonumber(szValue) then
+            return true
+        end
+
+    elseif szSym == ">" then
+        if EnemyNum > tonumber(szValue) then
+            return true
+        end
+
+    elseif szSym == ">=" then
+        if EnemyNum >= tonumber(szValue) then
+            return true
+        end
+
+    end
+
+    return false
+    
+end
+
 --判断上一次释放技能
 function Martin_Macro.MySkill(PlayerID,SkillID,SkillLv)
 
@@ -1077,6 +1128,25 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
                 end  
             end
             return Martin_Macro.CheckBuffTime(tStackDataTable[1], tStackDataTable[2], tStackDataTable[3], tStackDataTable[4])
+
+        elseif szRule:find("enemynum") ~= nil then      
+            local szCurrentWord = ""
+            local tStackDataTable = {"", "", ""}
+            for i = 1, #szKeyName do
+                local ch = szKeyName:sub(i, i)
+                if ch == ">" or ch == "=" or ch == "<" then
+                    tStackDataTable[1] = tStackDataTable[1] .. szCurrentWord
+                    tStackDataTable[2] = tStackDataTable[2] .. ch
+                    szCurrentWord = ""
+                else
+                    szCurrentWord = szCurrentWord .. ch
+                    if #szKeyName == i then		-- 最后一个字符, 这里要最后计算一次
+                        tStackDataTable[3] = szCurrentWord
+                    end
+                end  
+            end
+            return Martin_Macro.GetEnemyNum(tStackDataTable[1], tStackDataTable[2], tStackDataTable[3])
+
 
         elseif szRule:find("buff") ~= nil then      
             local szCurrentWord = ""

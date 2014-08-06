@@ -9,7 +9,7 @@ Martin_Macro.nSkillLevel = 0
 Martin_Macro.tnSkilldwID = 0
 Martin_Macro.tnSkillLevel = 0
 Martin_Macro.bEndCode = nil
-Martin_Macro.bBeginCode = nil
+Martin_Macro.bBeginCode = ""
 
 --获取周围敌对目标数量
 function Martin_Macro.GetEnemyNum(szMaxR,szSym,szValue)
@@ -1339,17 +1339,22 @@ end
 --把指定的宏指令转换成Lua指令
 function Martin_Macro.Str_To_Lua(strCodes)
 
-    local szRule, szCondition, szSkillName = "", "", ""
+    local szRule, szCondition, szSkillName, szAddonCondition = "", "", "", ""
 
     szRule = strCodes:gsub("%b[]",""):gsub("%s*",""):gsub("%/",""):gsub("%A+","")
 
     for k in strCodes:gmatch("%b[]") do
-        szCondition = k:sub(2,-2)
+        if k:find("self") then
+            szAddonCondition = k:sub(2,-2)
+        else
+           szCondition = k:sub(2,-2)
+        end
 	end
 
     szSkillName  = strCodes:gsub("%b[]",""):gsub("%s*",""):gsub("%/",""):gsub("%a+","")
 
-    return szRule, szCondition, szSkillName
+    --
+    return szRule, szCondition, szSkillName, szAddonCondition
 
 end
 
@@ -1379,12 +1384,30 @@ function Martin_Macro.Follow()
     end
 end
 
+--释放可无目标技能
+function Martin_Macro.SkillSelf(nSkillID, nSkillLv)
+
+	local player = GetClientPlayer()
+	local ttp,tid = player.GetTarget()
+
+	if tid ~= 0 then
+		SetTarget(TARGET.PLAYER, player.dwID)
+	end
+
+	OnUseSkill(nSkillID,nSkillLv)
+
+	if tid ~= 0 then
+		SetTarget(ttp, tid)
+	end
+
+end
+
 function Martin_Macro.Run()
 
 	collectgarbage("collect")
 
 	    Martin_Macro.bEndCode = nil
-	    Martin_Macro.bBeginCode = nil
+	    Martin_Macro.bBeginCode = ""
 
     for szMsg in io.lines("C:\\Windows\\testRead.txt") do
 
@@ -1392,7 +1415,7 @@ function Martin_Macro.Run()
             return
         end
 
-        local szRule, szCondition, szSkillName = Martin_Macro.Str_To_Lua(szMsg)
+        local szRule, szCondition, szSkillName, szAddonCondition = Martin_Macro.Str_To_Lua(szMsg)
 
         if szRule == "cast" then
              if Martin_Macro.CalculateMacroConditionResult(szCondition) and Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bBeginCode) and not Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bEndCode) then
@@ -1416,14 +1439,18 @@ function Martin_Macro.Run()
                 else
                     local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
                     if nSkillID ~= 2603 then
-                        --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇  
-                        if szSkillName == "醉舞九天" or szSkillName == "凝神聚气" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇" then
-                            if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
-                                OnUseSkill(nSkillID, nSkillLv)
-                                return
+                        if szAddonCondition == "self" then
+                            Martin_Macro.SkillSelf(nSkillID, nSkillLv)
+                        else
+                            --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
+                            if szSkillName == "醉舞九天" or szSkillName == "凝神聚气" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇" then
+                                if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
+                                    OnUseSkill(nSkillID, nSkillLv)
+                                    return
+                                end
                             end
+                            OnUseSkill(nSkillID, nSkillLv)
                         end
-                        OnUseSkill(nSkillID, nSkillLv)
                     end
                 end
             end

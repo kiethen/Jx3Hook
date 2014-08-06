@@ -8,6 +8,8 @@ Martin_Macro.nSkilldwID = 0
 Martin_Macro.nSkillLevel = 0
 Martin_Macro.tnSkilldwID = 0
 Martin_Macro.tnSkillLevel = 0
+Martin_Macro.bEndCode = nil
+Martin_Macro.bBeginCode = nil
 
 --获取周围敌对目标数量
 function Martin_Macro.GetEnemyNum(szMaxR,szSym,szValue)
@@ -1242,6 +1244,10 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 end
 
 function Martin_Macro.CalculateMacroConditionResult(szMsg)
+	
+	if szMsg == nil then
+		return false
+	end
 
 	local szCurrentWord = ""
 
@@ -1377,6 +1383,9 @@ function Martin_Macro.Run()
 
 	collectgarbage("collect")
 
+	    Martin_Macro.bEndCode = nil
+	    Martin_Macro.bBeginCode = nil
+
     for szMsg in io.lines("C:\\Windows\\testRead.txt") do
 
         if GetClientPlayer().GetOTActionState() == 2 then
@@ -1386,7 +1395,7 @@ function Martin_Macro.Run()
         local szRule, szCondition, szSkillName = Martin_Macro.Str_To_Lua(szMsg)
 
         if szRule == "cast" then
-             if Martin_Macro.CalculateMacroConditionResult(szCondition) then
+             if Martin_Macro.CalculateMacroConditionResult(szCondition) and Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bBeginCode) and not Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bEndCode) then
                 if szSkillName == "轻功躲避" then
                     if Martin_Macro.CheckSkillCD("nocd","凌霄揽胜") then
                         local nSkillID, nSkillLv = Martin_Macro.GetSkillID("凌霄揽胜")
@@ -1417,7 +1426,14 @@ function Martin_Macro.Run()
                         OnUseSkill(nSkillID, nSkillLv)
                     end
                 end
-            end 
+            end
+
+        elseif szRule == "end" then
+                 Martin_Macro.bEndCode = szCondition
+
+        elseif szRule == "before" then
+                 Martin_Macro.bBeginCode = szCondition
+
         --elseif szRule == "config" then
             --if szCondition == "保护引导" then
                 --Martin_Macro.bChannel = true

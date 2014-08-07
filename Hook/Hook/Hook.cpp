@@ -366,7 +366,7 @@ void OnBnReg(HWND hwndDlg)
     ::GetWindowTextA(::GetDlgItem(hwndDlg, IDC_EDIT_USER), szUser, sizeof(szUser));
     ::GetWindowTextA(::GetDlgItem(hwndDlg, IDC_EDIT_PASS), szPass, sizeof(szPass));
 
-    int nRet = pAuth->UserRegister("{E9F403D4-F46A-4F47-824C-6FBCCBE60AAB}", szUser, szPass, 0, 1, 0);
+    int nRet = pAuth->UserRegister("{E9F403D4-F46A-4F47-824C-6FBCCBE60AAB}", szUser, szPass, 0, FALSE, 0);
 
     if (nRet == 0) {
         martin->MsgBox(TEXT("提示"), TEXT("注册成功, 请充值后使用!!"));

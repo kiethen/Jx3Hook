@@ -390,6 +390,50 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 
 end
 
+local PetList = {
+    ["灵蛇"] = 9998,
+    ["圣蝎"] = 9956,
+    ["风蜈"] = 9996,
+    ["天蛛"] = 9997,
+    ["玉蟾"] = 9999,
+}
+
+--检查WD宠物状态
+function Martin_Macro.CheckPet(szRule,szKeyName)
+
+    local player = GetClientPlayer()
+    local pet = GetClientPlayer().GetPet()
+    local breturn
+
+    if szKeyName == "pet" or szRule == "pet" then
+        breturn = true
+        
+    elseif szKeyName == "nopet" or szRule == "nopet" then
+        breturn = false
+    end
+
+    if szRule:find("pet") == nil then
+        if pet then
+            return breturn
+        end
+    else
+        if pet then
+            for bit, dwID in pairs(PetList) do
+                if dwID == pet.dwTemplateID then
+                    if bit == szKeyName then
+                        return breturn
+                    else
+                        break
+                    end
+                end
+            end  
+        end
+    end
+
+    return not breturn
+
+end
+
 --buff类
 function Martin_Macro.CheckBuff(szRule,szBuffName,szSym,szNum)
 
@@ -1038,6 +1082,7 @@ function Martin_Macro.CheckState(szRule, sParam)
 
 end
 
+--是否可以释放XX技能
 function Martin_Macro.CanUse(sParam)
 
 	local szSkillId = Martin_Macro.GetSkillID(sParam)
@@ -1054,6 +1099,19 @@ function Martin_Macro.CanUse(sParam)
 		end
 	end
 	return false
+
+end
+
+function Martin_Macro.CheckChannal()
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+
+    if target then
+        if target.GetOTActionState() == 2 then
+            return true --返回true条件成立
+        end 
+    end
+    return false
 
 end
 
@@ -1191,8 +1249,14 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
         elseif szKeyName:find("dead") ~= nil then
                 return Martin_Macro.CheckDeath(szKeyName)
 
+        elseif szKeyName:find("tchannal") ~= nil or zKeyName:find("tChannal") then
+                return Martin_Macro.CheckChannal()
+
         elseif szRule:find("prepare") ~= nil or szKeyName:find("prepare") ~= nil then
                 return Martin_Macro.CheckSkillPrepare(szRule,szKeyName)
+
+        elseif szRule:find("pet") ~= nil or szKeyName:find("pet") ~= nil then
+                return Martin_Macro.CheckPet(szRule,szKeyName)
 
         elseif szRule:find("cast") ~= nil then
                 return Martin_Macro.CheckCast(szRule,szKeyName)

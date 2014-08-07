@@ -128,7 +128,6 @@ function Martin_Macro.CheckCast(szRule,szKeyName)
 
 end
 
-
 --根据指定BUFF ID判断对象是否有BUFF 返回BUFF层数
 function Martin_Macro.BuffChackById(hPlayer, dwBUFFID)
 
@@ -148,6 +147,8 @@ end
 --根据指定BUFF Name判断对象是否有BUFF
 function Martin_Macro.BuffChackByName(hPlayer, szBuffName, bMbuff)
 
+    local QiChangList = {"镇山河", "吞日月", "碎星辰", "凌太虚", "冲阴阳", "破苍穹", "化三清", "生太极"}
+
 	if hPlayer then
         if bMbuff == false then
             for i = 1,hPlayer.GetBuffCount(),1 do
@@ -157,17 +158,28 @@ function Martin_Macro.BuffChackByName(hPlayer, szBuffName, bMbuff)
                 end
             end
         else
+
             for i = 1,hPlayer.GetBuffCount(),1 do
                 local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = hPlayer.GetBuff(i - 1)
-                if GetClientPlayer().dwID == dwSkillSrcID then
-                    if Table_GetBuffName(dwID, nLevel) == szBuffName then
-                         return true
+
+                 for i,v in pairs(QiChangList) do
+                    if szBuffName == v then  --气场类型BUFF
+                        if Table_GetBuffName(dwID, nLevel) == szBuffName then
+                            local hNpc = GetNpc(dwSkillSrcID) --获取气场对象
+                            if hNpc.dwEmployer == GetClientPlayer().dwID then
+                                return true
+                            end
+                        end
                     end
+                 end
+
+                if Table_GetBuffName(dwID, nLevel) == szBuffName then
+                     if GetClientPlayer().dwID == dwSkillSrcID then
+                        return true
+                     end
                 end
             end
         end
-    
-
 	end
     return false
 
@@ -363,30 +375,32 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
+    local breturn
 
+    if szSkillName == "prepare" or szRule == "prepare" then
+        breturn = true
+    elseif szSkillName == "noprepare" or szRule == "noprepare" then
+        breturn = false
+    end
+    
     if target then
         local bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState() 
-        --if szRule == "prepare" then 
-            --bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
-        --elseif szRule == "tprepare" and target then
-            --bPrepare, dwID, nLevel, nFrameProgress = target.GetSkillPrepareState()
-        --end
 
-        if szSkillName == "prepare" then
+        if szRule == "" then
             if bPrepare == true then
                 if nFrameProgress > 0.4 then
-                    return true
+                    return breturn
                 end
-                
-            end  
+            end
+
         elseif Table_GetSkillName(dwID,nLevel) == szSkillName then
                 if nFrameProgress > 0.4 then
-                    return true
+                    return breturn
                 end
         end
     end
 
-    return false
+    return not breturn
 
 end
 
@@ -1113,6 +1127,7 @@ function Martin_Macro.CanUse(sParam)
 
 end
 
+--目标是否在引导技能
 function Martin_Macro.CheckChannal()
 	local player = GetClientPlayer()
     local ttype, tid = player.GetTarget()
@@ -1129,6 +1144,38 @@ function Martin_Macro.CheckChannal()
     end
 
     return false
+
+end
+
+--10尺内是否有自己的xx气场
+function Martin_Macro.CheckQiChang(szRule,szValue)
+
+    local Player = GetClientPlayer()
+    szValue = "气场"..szValue
+    local breturn
+
+    if szRule == "sura" then
+        breturn = true
+    elseif szRule == "nosura" then
+        breturn = false
+    end
+    
+
+    for i,v in pairs(GetNearbyNpcList()) do
+        local hNpc = GetNpc(v)
+        if hNpc then
+            local nDist = math.floor(((Player.nX - hNpc.nX) ^ 2 + (Player.nY - hNpc.nY) ^ 2 + (Player.nZ/8 - hNpc.nZ/8) ^ 2) ^ 0.5)/64
+            if nDist < 10 then
+                if hNpc.szName == szValue then
+                    if hNpc.dwEmployer == Player.dwID then
+                        return breturn
+                    end
+                end                          
+            end
+        end
+    end
+
+    return not breturn
 
 end
 
@@ -1250,6 +1297,9 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("name") ~= nil then
                 return Martin_Macro.CheckName(szRule,szKeyName)
+
+        elseif szRule:find("sura") ~= nil then
+                return Martin_Macro.CheckQiChang(szRule,szKeyName)
 
         elseif szRule:find("status") ~= nil then
                 return Martin_Macro.CheckStatus(szRule,szKeyName)

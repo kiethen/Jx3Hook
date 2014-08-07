@@ -997,11 +997,15 @@ function Martin_Macro.CheckForce(szRUle,szForceName)
 	local ttype, tid = player.GetTarget()
 	local target = GetTargetHandle(player.GetTarget())
 
-	if szRule == "tforce" and target and ttype == 4 then
+    if ttype == TARGET.NPC then
+        return true
+    end
+
+	if szRule == "tforce" and target and ttype == TARGET.PLAYER then
 		if g_tStrings.tForceTitle[target.dwForceID] == szForceName then
 			return true
 		end
-	elseif szRule == "tnoforce" and target and ttype == 4 then
+	elseif szRule == "tnoforce" and target and ttype == TARGET.PLAYER then
 		if g_tStrings.tForceTitle[target.dwForceID] ~= szForceName then
 			return true
 		end
@@ -1014,6 +1018,7 @@ end
 function Martin_Macro.CheckKungfuMount(szRule,szKungfuName)
 
 	local player = GetClientPlayer()
+    local ttype, tid = player.GetTarget()
 	local target = GetTargetHandle(player.GetTarget())
 
 	if szRule == "mount" then
@@ -1024,15 +1029,21 @@ function Martin_Macro.CheckKungfuMount(szRule,szKungfuName)
 		if player.GetKungfuMount().szSkillName ~= szKungfuName then
 			return true
 		end
-	elseif szRule == "tmount" and target and ttype == 4  and target then
-		if target.GetKungfuMount().szSkillName == szKungfuName then
-			return true
-		end
-	elseif szRule == "tnomount" and target and ttype == 4  and target then
-		if target.GetKungfuMount().szSkillName ~= szKungfuName then
-			return true
-		end
-	end
+	else
+        if ttype == TARGET.NPC then
+            return true
+        end
+
+        if szRule == "tmount" and target and ttype == TARGET.PLAYER  and target then
+            if target.GetKungfuMount().szSkillName == szKungfuName then
+                return true
+            end
+        elseif szRule == "tnomount" and target and ttype == TARGET.PLAYER  and target then
+            if target.GetKungfuMount().szSkillName ~= szKungfuName then
+                return true
+            end
+        end
+    end
 
 	return false
 
@@ -1104,13 +1115,19 @@ end
 
 function Martin_Macro.CheckChannal()
 	local player = GetClientPlayer()
+    local ttype, tid = player.GetTarget()
 	local target = GetTargetHandle(player.GetTarget())
+	
+	if ttype == TARGET.NPC then
+		return false
+	end
 
     if target then
         if target.GetOTActionState() == 2 then
             return true --返回true条件成立
         end 
     end
+
     return false
 
 end
@@ -1249,7 +1266,7 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
         elseif szKeyName:find("dead") ~= nil then
                 return Martin_Macro.CheckDeath(szKeyName)
 
-        elseif szKeyName:find("tchannal") ~= nil or zKeyName:find("tChannal") then
+        elseif szKeyName:find("tchannal") ~= nil or szKeyName:find("tChannal") ~= nil then
                 return Martin_Macro.CheckChannal()
 
         elseif szRule:find("prepare") ~= nil or szKeyName:find("prepare") ~= nil then

@@ -991,7 +991,7 @@ function Martin_Macro.CheckStatus(szRule,szStatus)
 
 end
 
-function Martin_Macro.CheckForce(szRUle,szForceName)
+function Martin_Macro.CheckForce(szRule,szForceName)
 
 	local player = GetClientPlayer()
 	local ttype, tid = player.GetTarget()

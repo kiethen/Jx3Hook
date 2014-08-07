@@ -67,11 +67,11 @@ DWORD GetLuaState()
     return L;
 }
 
+lua_State* L = NULL;
+
 void OnButtionRun()
 {
     try {
-        lua_State* L = NULL;
-        L = (lua_State*)GetLuaState();
         luaL_dostring(L, "Martin_Macro.Run()");      
     } catch (...) {
     }
@@ -79,16 +79,12 @@ void OnButtionRun()
 
 void OnButtionLoad()
 {
-    lua_State* L = NULL;
-    L = (lua_State*)GetLuaState();
     luaL_dofile(L, "C:\\Windows\\martin");
 }
 
 void OnButtionTms()
 {
     try {
-        lua_State* L = NULL;
-        L = (lua_State*)GetLuaState();
         luaL_dostring(L, "Martin_Macro.FaceToTarget()"); 	
     } catch (...) {
     }
@@ -104,8 +100,6 @@ HWND        g_hWgDlg = NULL;
 void SetWork()
 {
     try {
-        lua_State* L = NULL;
-        L = (lua_State*)GetLuaState();
         luaL_dostring(L, "Martin_Macro.SetWork()"); 	
     } catch (...) {
     }
@@ -131,6 +125,7 @@ BOOL CALLBACK MsgProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam )
 {
     switch (UMsg) {
     case WM_INITDIALOG :
+        L = (lua_State*)GetLuaState();
         return TRUE;
 
     case WM_LOAD:

@@ -1364,13 +1364,6 @@ end
     --Martin_Macro.hfile:seek("set")
 --end
 
---RegisterEvent("DO_SKILL_CAST",  function()
-  --local szText = Table_GetSkillName(arg1, arg2)
-  --if szText == "çéÏÒ¼±Çú" and arg0 == GetClientPlayer().dwID then
-		--Output(111)
-  --end
---end)
-
 function Martin_Macro.SetWork()
 	collectgarbage("collect")
 end
@@ -1406,8 +1399,8 @@ function Martin_Macro.Run()
 
 	collectgarbage("collect")
 
-	    Martin_Macro.bEndCode = nil
-	    Martin_Macro.bBeginCode = ""
+    Martin_Macro.bEndCode = nil
+    Martin_Macro.bBeginCode = ""
 
     for szMsg in io.lines("C:\\Windows\\testRead.txt") do
 

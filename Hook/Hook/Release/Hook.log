@@ -1,8 +1,6 @@
-﻿生成启动时间为 2014/8/7/星期四 0:13:17。
+﻿生成启动时间为 2014/8/7/星期四 13:55:01。
      1>项目“C:\Users\Martin\Desktop\Jx3Hook\Hook\Hook\Hook.vcxproj”在节点 2 上(build 个目标)。
-     1>PrepareForBuild:
-         正在创建目录“C:\Users\Martin\Desktop\Jx3Hook\Hook\Release\”。
-       InitializeBuildStatus:
+     1>InitializeBuildStatus:
          正在创建“Release\Hook.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
          所有输出均为最新。

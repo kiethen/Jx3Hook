@@ -11,6 +11,16 @@ Martin_Macro.tnSkillLevel = 0
 Martin_Macro.bEndCode = nil
 Martin_Macro.bBeginCode = ""
 
+function Martin_Macro.GetFileCode()
+  local f = assert(io.open("C:\\Windows\\testRead.txt", 'r'))
+  local string = f:read("*all")
+  f:close()
+  return string
+end
+
+Martin_Macro.StrCodes = Martin_Macro.GetFileCode()
+OutputMessage("MSG_SYS", Martin_Macro.StrCodes.."\n")
+
 --获取周围敌对目标数量
 function Martin_Macro.GetEnemyNum(szMaxR,szSym,szValue)
 
@@ -1528,110 +1538,113 @@ end
 
 function Martin_Macro.Run()
 
-	collectgarbage("collect")
+    collectgarbage("collect")
 
-    Martin_Macro.bEndCode = nil
-    Martin_Macro.bBeginCode = ""
+    local Run = coroutine.create(function()
+            Martin_Macro.bEndCode = nil
+            Martin_Macro.bBeginCode = ""
 
-    for szMsg in io.lines("C:\\Windows\\testRead.txt") do
+            for szMsg in Martin_Macro.StrCodes:gmatch("[^/]+") do
 
-        if GetClientPlayer().GetOTActionState() == 2 then
-            return
-        end
+                if GetClientPlayer().GetOTActionState() == 2 then
+                    return
+                end
 
-        local szRule, szCondition, szSkillName, szAddonCondition = Martin_Macro.Str_To_Lua(szMsg)
+                local szRule, szCondition, szSkillName, szAddonCondition = Martin_Macro.Str_To_Lua(szMsg)
 
-        if szRule == "cast" then
-             if Martin_Macro.CalculateMacroConditionResult(szCondition) and Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bBeginCode) and not Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bEndCode) then
-                if szSkillName == "轻功躲避" then
-                    if Martin_Macro.CheckSkillCD("nocd","凌霄揽胜") then
-                        local nSkillID, nSkillLv = Martin_Macro.GetSkillID("凌霄揽胜")
-                        OnUseSkill(nSkillID, nSkillLv)
-                    elseif Martin_Macro.CheckSkillCD("nocd","瑶台枕鹤") then
-                        local nSkillID, nSkillLv = Martin_Macro.GetSkillID("瑶台枕鹤")
-                        OnUseSkill(nSkillID, nSkillLv)
-                    elseif Martin_Macro.CheckSkillCD("nocd","迎风回浪") then
-                        local nSkillID, nSkillLv = Martin_Macro.GetSkillID("迎风回浪")
-                        OnUseSkill(nSkillID, nSkillLv)
-                    else
-                        OnUseSkill(9007,1) --后撤
-                    end 
-                elseif szSkillName == "跳" then
-                    Camera_EnableControl(CONTROL_JUMP, true)
-                elseif szSkillName == "跟随目标" then
-                    Martin_Macro.Follow()
-                else
-                    local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
-                    if nSkillID ~= 2603 then
-                        if szAddonCondition == "self" then
-                            Martin_Macro.SkillSelf(nSkillID, nSkillLv)
+                if szRule == "cast" then
+                     if Martin_Macro.CalculateMacroConditionResult(szCondition) and Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bBeginCode) and not Martin_Macro.CalculateMacroConditionResult(Martin_Macro.bEndCode) then
+                        if szSkillName == "轻功躲避" then
+                            if Martin_Macro.CheckSkillCD("nocd","凌霄揽胜") then
+                                local nSkillID, nSkillLv = Martin_Macro.GetSkillID("凌霄揽胜")
+                                OnUseSkill(nSkillID, nSkillLv)
+                            elseif Martin_Macro.CheckSkillCD("nocd","瑶台枕鹤") then
+                                local nSkillID, nSkillLv = Martin_Macro.GetSkillID("瑶台枕鹤")
+                                OnUseSkill(nSkillID, nSkillLv)
+                            elseif Martin_Macro.CheckSkillCD("nocd","迎风回浪") then
+                                local nSkillID, nSkillLv = Martin_Macro.GetSkillID("迎风回浪")
+                                OnUseSkill(nSkillID, nSkillLv)
+                            else
+                                OnUseSkill(9007,1) --后撤
+                            end 
+                        elseif szSkillName == "跳" then
+                            Camera_EnableControl(CONTROL_JUMP, true)
+                        elseif szSkillName == "跟随目标" then
+                            Martin_Macro.Follow()
                         else
-                            --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
-                            if szSkillName == "醉舞九天" or szSkillName == "凝神聚气" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇" then
-                                if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
+                            local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
+                            if nSkillID ~= 2603 then
+                                if szAddonCondition == "self" then
+                                    Martin_Macro.SkillSelf(nSkillID, nSkillLv)
+                                else
+                                    --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
+                                    if szSkillName == "醉舞九天" or szSkillName == "凝神聚气" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇" then
+                                        if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
+                                            OnUseSkill(nSkillID, nSkillLv)
+                                            return
+                                        end
+                                    end
                                     OnUseSkill(nSkillID, nSkillLv)
-                                    return
                                 end
                             end
-                            OnUseSkill(nSkillID, nSkillLv)
                         end
                     end
+
+                elseif szRule == "end" then
+                         Martin_Macro.bEndCode = szCondition
+
+                elseif szRule == "before" then
+                         Martin_Macro.bBeginCode = szCondition
+
+                --elseif szRule == "config" then
+                    --if szCondition == "保护引导" then
+                        --Martin_Macro.bChannel = true
+                    --elseif szCondition == "不保护引导" then
+                        --Martin_Macro.bChannel = false
+                    --end          
                 end
             end
+                --if GetClientPlayer().GetOTActionState() == 2 and Martin_Macro.bChannel then
+                    --Martin_Macro.hfile:seek("set")
+                    --return
+                --end
 
-        elseif szRule == "end" then
-                 Martin_Macro.bEndCode = szCondition
+                --local szCode = Martin_Macro.hfile:read("*line")
+                --Output(szCode)
 
-        elseif szRule == "before" then
-                 Martin_Macro.bBeginCode = szCondition
+                --if szCode == nil then
+                    --Martin_Macro.hfile:seek("set")
+                    --Martin_Macro.Run()
+                --else
+                    --local szRule, szCondition, szSkillName = Martin_Macro.Str_To_Lua(szCode)
+                    
+                    --if szRule == "cast" then
+                         --if Martin_Macro.CalculateMacroConditionResult(szCondition) then           
+                            --local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
+                            --if nSkillID ~= 2603 then
+                                --OnUseSkill(nSkillID, nSkillLv)
+                            --end
+                        --end
 
-        --elseif szRule == "config" then
-            --if szCondition == "保护引导" then
-                --Martin_Macro.bChannel = true
-            --elseif szCondition == "不保护引导" then
-                --Martin_Macro.bChannel = false
-            --end          
-        end
-    end
+                    --elseif szRule == "config" then
+                        --if szCondition == "保护引导" then
+                            --Martin_Macro.bChannel = true
+                            --Martin_Macro.Run()
 
-        --if GetClientPlayer().GetOTActionState() == 2 and Martin_Macro.bChannel then
-            --Martin_Macro.hfile:seek("set")
-            --return
-        --end
-
-        --local szCode = Martin_Macro.hfile:read("*line")
-        --Output(szCode)
-
-        --if szCode == nil then
-            --Martin_Macro.hfile:seek("set")
-            --Martin_Macro.Run()
-        --else
-            --local szRule, szCondition, szSkillName = Martin_Macro.Str_To_Lua(szCode)
-            
-            --if szRule == "cast" then
-                 --if Martin_Macro.CalculateMacroConditionResult(szCondition) then           
-                    --local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkillName)
-                    --if nSkillID ~= 2603 then
-                        --OnUseSkill(nSkillID, nSkillLv)
+                        --elseif szCondition == "不保护引导" then
+                            --Martin_Macro.bChannel = false
+                            --Martin_Macro.Run()
+                        --end          
                     --end
                 --end
 
-            --elseif szRule == "config" then
-                --if szCondition == "保护引导" then
-                    --Martin_Macro.bChannel = true
-                    --Martin_Macro.Run()
-
-                --elseif szCondition == "不保护引导" then
-                    --Martin_Macro.bChannel = false
-                    --Martin_Macro.Run()
-                --end          
-            --end
-        --end
+        end
+    )
+    coroutine.resume(Run)
 
 end
 
 OutputMessage("MSG_SYS", "======加载成功======".."\n")
-
 
 --function Martin_Macro.OnFrameBreathe()
 

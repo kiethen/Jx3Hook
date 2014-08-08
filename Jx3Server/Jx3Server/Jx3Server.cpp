@@ -72,7 +72,7 @@ lua_State* L = NULL;
 void OnButtionRun()
 {
     try {
-        luaL_dostring(L, "Martin_Macro.Run()");      
+        luaL_dostring(L, "Martin_Macro.Run()");
     } catch (...) {
     }
 }
@@ -172,7 +172,7 @@ unsigned int __stdcall ScriptRun(PVOID pM)
         if (GetKeyState(g_start) < 0) {    //°´ÏÂ1¼ü×´Ì¬
             if (g_hWgDlg != NULL) {
                 ::SendMessage(g_hWgDlg, WM_RUN, NULL, NULL);
-                Sleep(70);
+                Sleep(400);
             }
         }
         Sleep(30);

@@ -398,13 +398,13 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 
         if szRule == "" then
             if bPrepare == true then
-                if nFrameProgress > 0.4 then
+                if nFrameProgress > 0.1 then
                     return breturn
                 end
             end
 
         elseif Table_GetSkillName(dwID,nLevel) == szSkillName then
-                if nFrameProgress > 0.4 then
+                if nFrameProgress > 0.1 then
                     return breturn
                 end
         end
@@ -528,6 +528,60 @@ function Martin_Macro.CheckBuff(szRule,szBuffName,szSym,szNum)
     end
 
     return not breturn
+end
+
+--气场BUFF类
+function Martin_Macro.CheckQiChangBuff(szRule,szBuffName)
+
+	local player = GetClientPlayer()
+	local target = GetTargetHandle(player.GetTarget())
+	local dummy
+	local bcanceldummy
+	local breturn
+
+    if szRule =="qc" then   --自身友方气场
+        dummy = player
+        bcanceldummy = true
+        breturn = true
+    elseif szRule == "deqc" then    --自身敌方气场
+        dummy = player
+        bcanceldummy = false
+        breturn = true
+    elseif szRule =="noqc" then
+        dummy = player
+        bcanceldummy = true
+        breturn = false
+    elseif szRule == "nodeqc" then
+        dummy = player
+        bcanceldummy = false
+        breturn = false
+    elseif szRule == "tqc" and target then  --目标友方气场
+        dummy = target
+        bcanceldummy = true
+        breturn = true
+    elseif szRule == "tdeqc" and target then    --目标敌方气场
+        dummy = target
+        bcanceldummy = false
+        breturn = true
+    elseif szRule == "tnoqc" and target then
+        dummy = target
+        bcanceldummy = true
+        breturn = false
+    elseif szRule == "tnodeqc" and target then
+        dummy = target
+        bcanceldummy = false
+        breturn = false
+    end
+
+    for i = 1,dummy.GetBuffCount(),1 do
+        local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
+		if Table_GetBuffName(dwID,nLevel) == szBuffName and bCanCancel == bcanceldummy then
+			return breturn
+		end
+    end
+
+	return not breturn
+
 end
 
 function Martin_Macro.CheckBuffType(szRule,szBuffType)
@@ -1077,40 +1131,37 @@ function Martin_Macro.CheckState(szRule, sParam)
 
     if szRule == "state" then
         if sParam == "无减伤" then
-            local szOption = "nobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神|泉凝月|云栖松|转乾坤|天地低昂|笑醉狂|贪魔体"
+            local szOption = "nobuff:无相诀|转乾坤|天地低昂|贪魔体|蝶戏水|雾体"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "无免伤" then
-            local szOption = "nobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神"
+            local szOption = "nobuff:守如山|镇山河|鬼斧神工|笑醉狂|御|御天|太虚|回神"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "被控制" then
-            local szOption = "status:被击倒|眩晕|定身|锁足|僵直"
+            local szOption = "status:被击倒|被击退|被击飞|眩晕|定身|僵直|锁足"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "可控制" then
-            local szOption = "nobuff:梦泉虎跑|龙跃于渊|镇山河|力拔|素衿|折骨|生太极|千斤坠|转乾坤|星楼月影|蛊虫狂暴|啸日|生死之交|绝伦逸群|风蜈献祭|纵轻骑|碧蝶献祭|御天|不工|灵辉|超然|贪魔体|青阳"
+            local szOption = "nobuff:星楼月影|折骨|素衿|力拔|纵轻骑|转乾坤|生死之交|不工|玉泉鱼跃|梦泉虎跑|蛊虫狂暴|风蜈献祭|碧蝶献祭|圣体|灵辉|超然|出渊|飞将|零落|迷心蛊|菩提身|青阳|笑醉狂|烟雨行|龙跃于渊|流火飞星|霸体|啸日|镇山河|贪魔体|绝伦逸群|御天,noqc:生太极,nostatus:冲刺"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "非被控" then
-            local szOption = "nostatus:被击倒|眩晕|定身|锁足|僵直"
+            local szOption = "nostatus:被击倒|被击退|被击飞|眩晕|定身|僵直|锁足"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         end
 
     elseif szRule == "tstate" then
         if sParam == "可控制" then
-            local szOption = "tnobuff:梦泉虎跑|龙跃于渊|镇山河|力拔|素衿|折骨|生太极|千斤坠|转乾坤|星楼月影|蛊虫狂暴|啸日|生死之交|绝伦逸群|风蜈献祭|纵轻骑|碧蝶献祭|御天|不工|灵辉|超然|贪魔体|青阳"
+            local szOption = "tnobuff:星楼月影|折骨|素衿|力拔|纵轻骑|转乾坤|生死之交|不工|玉泉鱼跃|梦泉虎跑|蛊虫狂暴|风蜈献祭|碧蝶献祭|圣体|灵辉|超然|出渊|飞将|零落|迷心蛊|菩提身|青阳|笑醉狂|烟雨行|龙跃于渊|流火飞星|霸体|啸日|镇山河|贪魔体|绝伦逸群|御天,tnoqc:生太极,tnostatus:冲刺"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "非被控" then
-            local szOption = "tnostatus:被击倒|眩晕|定身|锁足|僵直"
+            local szOption = "tnostatus:被击倒|被击退|被击飞|眩晕|定身|僵直|锁足"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "无免伤" then
-            local szOption = "tnobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神"
+            local szOption = "tnobuff:守如山|镇山河|鬼斧神工|笑醉狂|御|御天|太虚|回神"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "被控制" then
-            local szOption = "tstatus:被击倒|眩晕|定身|锁足|僵直"
+            local szOption = "tstatus:被击倒|被击退|被击飞|眩晕|定身|僵直|锁足"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         elseif sParam == "无减伤" then
-            local szOption = "tnobuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神|泉凝月|云栖松|转乾坤|天地低昂|笑醉狂|贪魔体"
-            return Martin_Macro.CalculateMacroConditionResult(szOption)
-        elseif sParam == "有减伤" then
-            local szOption = "tbuff:罗汉金身|御|御天|守如山|镇山河|鬼斧神工|太虚|回神|泉凝月|云栖松|转乾坤|天地低昂|笑醉狂|贪魔体"
+            local szOption = "tnobuff:无相诀|转乾坤|天地低昂|贪魔体|蝶戏水|雾体"
             return Martin_Macro.CalculateMacroConditionResult(szOption)
         end
     end
@@ -1307,6 +1358,9 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
 
         elseif szRule:find("name") ~= nil then
                 return Martin_Macro.CheckName(szRule,szKeyName)
+
+        elseif szRule:find("qc") ~= nil then
+                return Martin_Macro.CheckQiChangBuff(szRule,szKeyName)
 
         elseif szRule:find("sura") ~= nil then
                 return Martin_Macro.CheckQiChang(szRule,szKeyName)

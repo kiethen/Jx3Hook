@@ -67,19 +67,38 @@ DWORD GetLuaState()
     return L;
 }
 
-lua_State* L = NULL;
+lua_State*  L = NULL;
+BOOL        g_IsWork = TRUE;
+BOOL        g_bIsFirst = TRUE;
+HANDLE      g_h[2] = {NULL, NULL};
+HMODULE     g_hModule = NULL;
+HWND        g_hWgDlg = NULL;
 
 void OnButtionRun()
 {
     try {
-        luaL_dostring(L, "Martin_Macro.Run()");
+        luaL_dostring(L, "Martin_Config.OpenWindow()");
+    } catch (...) {
+    }
+}
+
+void OnButtionStop()
+{
+    try {
+        luaL_dostring(L, "Martin_Config.CloseWindow()");
     } catch (...) {
     }
 }
 
 void OnButtionLoad()
 {
-    luaL_dofile(L, "C:\\Windows\\martin");
+    if (g_bIsFirst) {
+        luaL_dofile(L, "C:\\Windows\\martin");
+        luaL_dofile(L, "C:\\Windows\\config");
+        g_bIsFirst = FALSE;
+    }
+
+    luaL_dostring(L, "Martin_Config.Debug()");
 }
 
 void OnButtionTms()
@@ -89,12 +108,6 @@ void OnButtionTms()
     } catch (...) {
     }
 }
-
-BOOL        g_IsWork = TRUE;
-BOOL        g_bIsFirst = TRUE;
-HANDLE      g_h[2] = {NULL, NULL};
-HMODULE     g_hModule = NULL;
-HWND        g_hWgDlg = NULL;
 
 //初始化环境
 void SetWork()
@@ -118,8 +131,9 @@ void SetWork()
 
 #define  WM_LOAD            WM_USER + 500
 #define  WM_RUN             WM_USER + 501
-#define  WM_TMS             WM_USER + 502
-#define  WM_SETWORK         WM_USER + 503
+#define  WM_STOP            WM_USER + 502
+#define  WM_TMS             WM_USER + 503
+#define  WM_SETWORK         WM_USER + 504 //此条与HOOK同步
 
 BOOL CALLBACK MsgProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam )
 {
@@ -134,6 +148,10 @@ BOOL CALLBACK MsgProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam )
 
     case WM_RUN:
         OnButtionRun();
+        return TRUE;
+
+    case WM_STOP:
+        OnButtionStop();
         return TRUE;
 
     case WM_TMS:
@@ -168,11 +186,17 @@ BOOL CALLBACK MsgProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam )
 
 unsigned int __stdcall ScriptRun(PVOID pM)  
 {
+    static BOOL bIsAn = FALSE;
     while(g_IsWork) {
         if (GetKeyState(g_start) < 0) {    //按下1键状态
-            if (g_hWgDlg != NULL) {
+            if (g_hWgDlg != NULL &&  bIsAn == FALSE) {
                 ::SendMessage(g_hWgDlg, WM_RUN, NULL, NULL);
-                Sleep(400);
+                bIsAn = TRUE;
+            }
+        } else {
+            if (g_hWgDlg != NULL && bIsAn == TRUE) {
+                ::SendMessage(g_hWgDlg, WM_STOP, NULL, NULL);
+                bIsAn = FALSE;
             }
         }
         Sleep(30);
@@ -209,7 +233,6 @@ LRESULT CALLBACK GameProc(
                 g_hWgDlg = CreateDialog(g_hModule, TEXT("MSG"), NULL, MsgProc);
                 g_h[0] = (HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL);
                 g_h[1] = (HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL);
-                g_bIsFirst = FALSE;
             }
         }
     }

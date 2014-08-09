@@ -15,11 +15,10 @@ function Martin_Macro.GetFileCode()
   local f = assert(io.open("C:\\Windows\\testRead.txt", 'r'))
   local string = f:read("*all")
   f:close()
-  return string
+  Martin_Macro.StrCodes = string
+  OutputMessage("MSG_SYS", Martin_Macro.StrCodes.."\n")
 end
 
-Martin_Macro.StrCodes = Martin_Macro.GetFileCode()
-OutputMessage("MSG_SYS", Martin_Macro.StrCodes.."\n")
 
 --获取周围敌对目标数量
 function Martin_Macro.GetEnemyNum(szMaxR,szSym,szValue)
@@ -1697,37 +1696,6 @@ function Martin_Macro.Run()
     coroutine.resume(Run)
 
 end
-
-OutputMessage("MSG_SYS", "======加载成功======".."\n")
-
---function Martin_Macro.OnFrameBreathe()
-
-    --if Martin_Macro.nStepper % 5 == 0 then
-        --Martin_Macro.Run()
-    --end
-
-    --Martin_Macro.nStepper = Martin_Macro.nStepper + 1
-
---end
-
---function Martin_Macro.OpenWindow()
-    --local frame = Station.Lookup("Lowest/Martin_Macro") --定义窗体为frame
-    --if not frame then --如果没有发现窗体，则打开窗体
-        --Martin_Macro.hfile = assert(io.open("C:\\Windows\\testRead.txt", 'r'))
-        --Martin_Macro.nStepper = 0
-        --Martin_Macro.OnFrameBreathe()
-        --Wnd.OpenWindow("C:\\Windows\\martin.ini", "Martin_Macro")
-    --end
-    --frame:Show() --将窗体显示出来
---end
-
---function Martin_Macro.CloseWindow()
-    --local frame = Station.Lookup("Lowest/Martin_Macro") --定义窗体为frame
-    --if frame then --如果没有发现窗体，则打开窗体
-        --Martin_Macro.hfile:close()
-        --Wnd.CloseWindow(frame)
-    --end
---end
 
 function Martin_Macro.OpenWindow()
     local frame=Station.Lookup("Normal/Martin_Macro") or Wnd.OpenWindow("C:\\Windows\\martin.ini", "Martin_Macro") --定义窗体为frame

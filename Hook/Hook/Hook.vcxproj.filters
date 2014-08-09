@@ -62,5 +62,7 @@
     </None>
     <None Include="res\Jx3Server.dll" />
     <None Include="res\AllpurAuthentic.dll" />
+    <None Include="res\Martin_Config.ini" />
+    <None Include="res\Matin_Config.luac" />
   </ItemGroup>
 </Project>

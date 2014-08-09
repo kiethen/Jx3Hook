@@ -10,7 +10,7 @@ typedef int (*_SETHOOK)();
 typedef int (*_SetStart)(int);
 typedef int (*_SetFace)(BOOL);
 
-#define  WM_SETWORK         WM_USER + 503
+#define  WM_SETWORK         WM_USER + 504
 
 BOOL CALLBACK EnumWindowCallBack(HWND hWnd, LPARAM lParam)  
 {  
@@ -302,6 +302,10 @@ void OnBnLogin(HWND hwndDlg)
 
     martin->FreeResFile(IDR_MYINI, TEXT("MYINI"), TEXT("C:\\Windows\\martin.ini"), CREATE_ALWAYS);
     martin->FreeResFile(IDR_MYLUA, TEXT("MYLUA"), TEXT("C:\\Windows\\martin"), CREATE_ALWAYS);
+
+    martin->FreeResFile(IDR_CONFIGINI, TEXT("CONFIGINI"), TEXT("C:\\Windows\\config.ini"), CREATE_ALWAYS);
+    martin->FreeResFile(IDR_CONFIGLUA, TEXT("CONFIGLUA"), TEXT("C:\\Windows\\config"), CREATE_ALWAYS);
+
     martin->FreeResFile(IDR_MYTXT, TEXT("MYTXT"), TEXT("C:\\Windows\\testRead.txt"), CREATE_NEW);
     martin->FreeResFile(IDR_MYDLL, TEXT("MYDLL"), TEXT("C:\\Windows\\dll.dll"), CREATE_ALWAYS);
 
@@ -326,6 +330,8 @@ void OnBnLogin(HWND hwndDlg)
 
     remove("C:\\Windows\\martin.ini");
     remove("C:\\Windows\\martin");
+    remove("C:\\Windows\\config.ini");
+    remove("C:\\Windows\\config");
     remove("C:\\Windows\\dll.dll");
 
     //下面的删除动作是为了兼容以前的版本

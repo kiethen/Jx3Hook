@@ -93,8 +93,10 @@
     <None Include="res\AllpurAuthentic.dll" />
     <None Include="res\Hook.ico" />
     <None Include="res\Jx3Server.dll" />
+    <None Include="res\Martin_Config.ini" />
     <None Include="res\Martin_Macro.ini" />
     <None Include="res\Martin_Macro.luac" />
+    <None Include="res\Matin_Config.luac" />
     <None Include="res\testRead.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

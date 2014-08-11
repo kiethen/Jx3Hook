@@ -317,7 +317,9 @@ void OnBnLogin(HWND hwndDlg)
     DialogBox(GetModuleHandle(NULL), TEXT("Jx3Hook"), NULL, DialogProc);
 
     if (g_hMod != NULL) {
-        ::CloseHandle(::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, g_hMod, 0, NULL));
+        HANDLE h = ::CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)FreeLibrary, g_hMod, 0, NULL);
+        WaitForSingleObject(h,INFINITE);
+        CloseHandle(h);
     }
 
     ///////////////////////////////////////////////////////////////

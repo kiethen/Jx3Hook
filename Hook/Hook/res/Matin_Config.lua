@@ -30,6 +30,7 @@ function Martin_Config.CloseWindow()
 
     local frame = Station.Lookup("Lowest/Martin_Config") --定义窗体为frame
     if frame then --如发现窗体, 则关闭它
+        Martin_Config.nStepper = 0
         Wnd.CloseWindow(frame)
     end
 

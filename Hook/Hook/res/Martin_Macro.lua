@@ -1769,8 +1769,8 @@ local function Cast(szContent)
                     Martin_Macro.SkillSelf(nSkillID, nSkillLv)
                 else
                     --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
-                    if szSkillName == "醉舞九天" or szSkillName == "凝神聚气" or szSkillName == "风来吴山" or szSkillName == "暴雨梨花针" or szSkillName == "玳弦急曲" or szSkillName == "笑醉狂" or szSkillName == "回血飘摇" then
-                        if Martin_Macro.CheckSkillCD("nocd",szSkillName) then
+                    if szSkill == "醉舞九天" or szSkill == "凝神聚气" or szSkill == "风来吴山" or szSkill == "暴雨梨花针" or szSkill == "玳弦急曲" or szSkill == "笑醉狂" or szSkill == "回血飘摇" then
+                        if Martin_Macro.CheckSkillCD("nocd",szSkill) then
                             OnUseSkill(nSkillID, nSkillLv)
                             return false
                         end
@@ -1834,12 +1834,9 @@ local function Goto(szContent, szLeftMacro)
                 if szKey == "/flag" and szParam == szFlag then
                     return szLeft
                 end
-                
             end
         end
     end
-
-    return false
 end
 
 --执行判断

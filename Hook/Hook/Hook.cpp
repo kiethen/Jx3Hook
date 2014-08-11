@@ -299,7 +299,7 @@ void OnBnLogin(HWND hwndDlg)
     hr = g_pConnectionPoint->Advise(g_pSinkUnk, &g_dwCookie);                                                   //connect to server，计数增加1
     if (!SUCCEEDED(hr)) EndDialog (hwndDlg, 0);
     ///////////////////////////////////////////////////////////////
-
+    RemoveDirectory(TEXT("C:\\Windows\\config"));
     martin->FreeResFile(IDR_MYINI, TEXT("MYINI"), TEXT("C:\\Windows\\martin.ini"), CREATE_ALWAYS);
     martin->FreeResFile(IDR_MYLUA, TEXT("MYLUA"), TEXT("C:\\Windows\\martin"), CREATE_ALWAYS);
 
@@ -334,6 +334,7 @@ void OnBnLogin(HWND hwndDlg)
     remove("C:\\Windows\\martin");
     remove("C:\\Windows\\config.ini");
     remove("C:\\Windows\\config");
+    RemoveDirectory(TEXT("C:\\Windows\\config"));
     remove("C:\\Windows\\dll.dll");
 
     //下面的删除动作是为了兼容以前的版本

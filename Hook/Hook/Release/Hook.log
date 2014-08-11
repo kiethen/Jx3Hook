@@ -1,11 +1,12 @@
-﻿生成启动时间为 2014/8/11/星期一 17:10:57。
+﻿生成启动时间为 2014/8/11/星期一 19:50:41。
      1>项目“C:\Users\Martin\Desktop\Jx3Hook\Hook\Hook\Hook.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Release\Hook.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         所有输出均为最新。
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Hook.cpp
+         Hook.cpp
        ResourceCompile:
-         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /D _UNICODE /D UNICODE /l"0x0409" /nologo /fo"Release\Hook.res" Hook.rc 
+         所有输出均为最新。
        Link:
          D:\Development\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Martin\Desktop\Jx3Hook\Hook\Release\Hook.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\Hook.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Martin\Desktop\Jx3Hook\Hook\Release\Hook.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Martin\Desktop\Jx3Hook\Hook\Release\Hook.lib" /MACHINE:X86 Release\Hook.res
          Release\Hook.obj
@@ -23,4 +24,4 @@
 
 生成成功。
 
-已用时间 00:00:00.69
+已用时间 00:00:01.07

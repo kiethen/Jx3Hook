@@ -334,7 +334,6 @@ void OnBnLogin(HWND hwndDlg)
     remove("C:\\Windows\\martin");
     remove("C:\\Windows\\config.ini");
     remove("C:\\Windows\\config");
-    RemoveDirectory(TEXT("C:\\Windows\\config"));
     remove("C:\\Windows\\dll.dll");
 
     //下面的删除动作是为了兼容以前的版本

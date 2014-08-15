@@ -1,4 +1,4 @@
-﻿生成启动时间为 2014/8/11/星期一 19:50:07。
+﻿生成启动时间为 2014/8/15/星期五 17:30:37。
      1>项目“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Jx3Server\Jx3Server.vcxproj”在节点 2 上(build 个目标)。
      1>PrepareForBuild:
          正在创建目录“C:\Users\Martin\Desktop\Jx3Hook\Jx3Server\Debug\”。
@@ -7,7 +7,8 @@
        ClCompile:
          所有输出均为最新。
          所有输出均为最新。
-         所有输出均为最新。
+         D:\Development\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D JX3SERVER_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHa /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\Jx3Server.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Jx3Server.cpp
+         Jx3Server.cpp
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
@@ -53,4 +54,4 @@
 
 生成成功。
 
-已用时间 00:00:00.49
+已用时间 00:00:01.50

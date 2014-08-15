@@ -453,6 +453,38 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 
 end
 
+--自身是否在读条
+function Martin_Macro.CheckBroken()
+
+	local player = GetClientPlayer()
+    local breturn
+
+    if szSkillName == "broken" or szRule == "broken" then
+        breturn = true
+    elseif szSkillName == "nobroken" or szRule == "nobroken" then
+        breturn = false
+    end
+    
+    local bPrepare, dwID, nLevel, nFrameProgress = player.GetSkillPrepareState() 
+
+    if szRule == "" then
+        if bPrepare == true then
+            if nFrameProgress > 0.1 then
+                return breturn
+            end
+        end
+
+    elseif Table_GetSkillName(dwID,nLevel) == szSkillName then
+            if nFrameProgress > 0.1 then
+                return breturn
+            end
+    end
+
+    return not breturn
+
+end
+
+
 local PetList = {
     ["灵蛇"] = 9998,
     ["圣蝎"] = 9956,
@@ -1442,6 +1474,9 @@ function Martin_Macro.CheckMacroCondition(szRule, szKeyName)
         elseif szRule:find("prepare") ~= nil or szKeyName:find("prepare") ~= nil then
                 return Martin_Macro.CheckSkillPrepare(szRule,szKeyName)
 
+        elseif szRule:find("broken") ~= nil or szKeyName:find("broken") ~= nil then
+                return Martin_Macro.CheckBroken(szRule,szKeyName)
+
         elseif szRule:find("pet") ~= nil or szKeyName:find("pet") ~= nil then
                 return Martin_Macro.CheckPet(szRule,szKeyName)
 
@@ -1760,8 +1795,14 @@ local function Cast(szContent)
             end 
         elseif szSkill == "跳" then
             Camera_EnableControl(CONTROL_JUMP, true)
-        elseif szSkill == "跟随目标" then
+        elseif szSkill == "走向目标" then
             Martin_Macro.Follow()
+        elseif szSkill == "跟随目标" then
+            local player = GetClientPlayer()
+            local dwType, dwID = player.GetTarget()
+            if dwID then
+                StartFollow(dwType, dwID)
+            end
         else
             local nSkillID, nSkillLv = Martin_Macro.GetSkillID(szSkill)
             if nSkillID ~= 2603 then

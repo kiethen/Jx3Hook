@@ -454,7 +454,7 @@ function Martin_Macro.CheckSkillPrepare(szRule, szSkillName)
 end
 
 --自身是否在读条
-function Martin_Macro.CheckBroken()
+function Martin_Macro.CheckBroken(szRule, szSkillName)
 
 	local player = GetClientPlayer()
     local breturn
@@ -469,15 +469,11 @@ function Martin_Macro.CheckBroken()
 
     if szRule == "" then
         if bPrepare == true then
-            if nFrameProgress > 0.1 then
-                return breturn
-            end
+             return breturn
         end
 
     elseif Table_GetSkillName(dwID,nLevel) == szSkillName then
-            if nFrameProgress > 0.1 then
-                return breturn
-            end
+             return breturn
     end
 
     return not breturn

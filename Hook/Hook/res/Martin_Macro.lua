@@ -1589,8 +1589,8 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
             szRule = szCurrentWord
             --tStackDataTable[nCurrentStackLevel][2] = "+"
             tStackDataTable[nCurrentStackLevel][3] = szRule
-			if tStackDataTable[1][1] == false then
-                return tStackDataTable[1][1]
+			if tStackDataTable[nCurrentStackLevel][1] == false then
+                return tStackDataTable[nCurrentStackLevel][1]
             end
 
         -- 遇到一个 ; 标记,计算之前的结果

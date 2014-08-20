@@ -562,36 +562,38 @@ function Martin_Macro.CheckBuff(szRule,szBuffName,szSym,szNum)
 
     end
 
-    if szSym == "" then
-        if Martin_Macro.BuffChackByName(dummy, szBuffName, bMbuff) then
-            return breturn
-        end
-        
-    else
-        --判断层数
-        local nStackNum = Martin_Macro.ChackBuffByNameRetNum(dummy, szBuffName, bMbuff)
+    if dummy then
+        if szSym == "" then
+            if Martin_Macro.BuffChackByName(dummy, szBuffName, bMbuff) then
+                return breturn
+            end
+            
+        else
+            --判断层数
+            local nStackNum = Martin_Macro.ChackBuffByNameRetNum(dummy, szBuffName, bMbuff)
 
-        if szSym == ">" then
-            if nStackNum > tonumber(szNum) then
-                return breturn
+            if szSym == ">" then
+                if nStackNum > tonumber(szNum) then
+                    return breturn
+                end
+            elseif szSym == "<" then
+                if nStackNum < tonumber(szNum) then
+                    return breturn
+                end
+            elseif szSym == "=" then
+                if nStackNum == tonumber(szNum) then
+                    return breturn
+                end
+            elseif szSym == "<=" then
+                if nStackNum <= tonumber(szNum) then
+                    return breturn
+                end
+            elseif szSym == ">=" then
+                if nStackNum >= tonumber(szNum) then
+                    return breturn
+                end
             end
-        elseif szSym == "<" then
-            if nStackNum < tonumber(szNum) then
-                return breturn
-            end
-        elseif szSym == "=" then
-            if nStackNum == tonumber(szNum) then
-                return breturn
-            end
-        elseif szSym == "<=" then
-            if nStackNum <= tonumber(szNum) then
-                return breturn
-            end
-        elseif szSym == ">=" then
-            if nStackNum >= tonumber(szNum) then
-                return breturn
-            end
-        end
+        end    
     end
 
     return not breturn
@@ -640,11 +642,13 @@ function Martin_Macro.CheckQiChangBuff(szRule,szBuffName)
         breturn = false
     end
 
-    for i = 1,dummy.GetBuffCount(),1 do
-        local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
-		if Table_GetBuffName(dwID,nLevel) == szBuffName and bCanCancel == bcanceldummy then
-			return breturn
-		end
+    if dummy then
+        for i = 1,dummy.GetBuffCount(),1 do
+            local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
+            if Table_GetBuffName(dwID,nLevel) == szBuffName and bCanCancel == bcanceldummy then
+                return breturn
+            end
+        end
     end
 
 	return not breturn
@@ -708,38 +712,10 @@ function Martin_Macro.CheckBuffTime(szRule,szBuffName,szSym,nTime)
         bMbuff = true
     end
 
-    if bMbuff == false then
-        for i = 1,dummy.GetBuffCount(),1 do
-            local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
-            if Table_GetBuffName(dwID, nLevel) == szBuffName then
-                local nTimeLeft = tonumber(("%.2f"):format((nEndFrame - GetLogicFrameCount())/16))
-                if szSym == ">" then
-                    if nTimeLeft > tonumber(nTime) then
-                        return true
-                    end
-                elseif szSym == "<" then
-                    if nTimeLeft < tonumber(nTime) then
-                        return true
-                    end
-                elseif szSym == "=" then
-                    if nTimeLeft == tonumber(nTime) then
-                        return true
-                    end
-                elseif szSym == "<=" then
-                    if nTimeLeft <= tonumber(nTime) then
-                        return true
-                    end
-                elseif szSym == ">=" then
-                    if nTimeLeft >= tonumber(nTime) then
-                        return true
-                    end
-                end
-            end
-        end
-    else
-        for i = 1,dummy.GetBuffCount(),1 do
-            local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
-            if  dwSkillSrcID == player.dwID then
+    if dummy then
+        if bMbuff == false then
+            for i = 1,dummy.GetBuffCount(),1 do
+                local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
                 if Table_GetBuffName(dwID, nLevel) == szBuffName then
                     local nTimeLeft = tonumber(("%.2f"):format((nEndFrame - GetLogicFrameCount())/16))
                     if szSym == ">" then
@@ -765,9 +741,38 @@ function Martin_Macro.CheckBuffTime(szRule,szBuffName,szSym,nTime)
                     end
                 end
             end
+        else
+            for i = 1,dummy.GetBuffCount(),1 do
+                local dwID, nLevel, bCanCancel, nEndFrame, nIndex, nStackNum, dwSkillSrcID, bValid = dummy.GetBuff(i - 1)
+                if  dwSkillSrcID == player.dwID then
+                    if Table_GetBuffName(dwID, nLevel) == szBuffName then
+                        local nTimeLeft = tonumber(("%.2f"):format((nEndFrame - GetLogicFrameCount())/16))
+                        if szSym == ">" then
+                            if nTimeLeft > tonumber(nTime) then
+                                return true
+                            end
+                        elseif szSym == "<" then
+                            if nTimeLeft < tonumber(nTime) then
+                                return true
+                            end
+                        elseif szSym == "=" then
+                            if nTimeLeft == tonumber(nTime) then
+                                return true
+                            end
+                        elseif szSym == "<=" then
+                            if nTimeLeft <= tonumber(nTime) then
+                                return true
+                            end
+                        elseif szSym == ">=" then
+                            if nTimeLeft >= tonumber(nTime) then
+                                return true
+                            end
+                        end
+                    end
+                end
+            end
         end
     end
-
 	return false
 
 end
@@ -955,39 +960,41 @@ function Martin_Macro.CheckCharacterPointValue(szRule,szSym,szValue)
 		dummymax = player.nSprintPowerMax
 	end
 
-	local dummy = dummycurrent/dummymax 
+    if dummycurrent then
+        local dummy = dummycurrent/dummymax 
 
-	if szValue == "1.0" then
-		dummy = tonumber(("%.2f"):format(dummy))
-	elseif tonumber(szValue) >= 1 then
-		dummy = dummycurrent
-	else
-		dummy = tonumber(("%.2f"):format(dummy))
-	end
+        if szValue == "1.0" then
+            dummy = tonumber(("%.2f"):format(dummy))
+        elseif tonumber(szValue) >= 1 then
+            dummy = dummycurrent
+        else
+            dummy = tonumber(("%.2f"):format(dummy))
+        end
 
-	local nValue = tonumber(szValue)
+        local nValue = tonumber(szValue)
 
-	if szSym == ">" then
-		if dummy > nValue then
-			return true
-		end
-	elseif szSym == "<" then
-		if dummy < nValue then
-			return true
-		end
-	elseif szSym == "=" then
-		if dummy == nValue then
-			return true
-		end
-	elseif szSym == "<=" then
-		if dummy <= nValue then
-			return true
-		end
-	elseif szSym == ">=" then
-		if dummy >= nValue then
-			return true
-		end
-	end
+        if szSym == ">" then
+            if dummy > nValue then
+                return true
+            end
+        elseif szSym == "<" then
+            if dummy < nValue then
+                return true
+            end
+        elseif szSym == "=" then
+            if dummy == nValue then
+                return true
+            end
+        elseif szSym == "<=" then
+            if dummy <= nValue then
+                return true
+            end
+        elseif szSym == ">=" then
+            if dummy >= nValue then
+                return true
+            end
+        end
+    end
 
 	return false
 
@@ -996,7 +1003,10 @@ end
 function Martin_Macro.CheckName(szRule,szValue)
 	local player = GetClientPlayer()
 	local target = GetTargetHandle(player.GetTarget())
-	local ttarget = GetTargetHandle(target.GetTarget())
+    local ttarget
+    if target then
+        ttarget = GetTargetHandle(target.GetTarget())
+    end
     
     local szName = ""
 
@@ -1007,13 +1017,17 @@ function Martin_Macro.CheckName(szRule,szValue)
     end
     
     if szRule == "tname" then
-        if target.szName == szName then
-            return true
+        if target then
+            if target.szName == szName then
+                return true
+            end    
         end
     
     elseif szRule == "tnoname" then
-        if target.szName ~= szName then
-            return true
+        if target then
+            if target.szName ~= szName then
+                return true
+            end
         end
 
     elseif szRule == "ttname" then
@@ -1105,32 +1119,33 @@ function Martin_Macro.CheckStatus(szRule,szStatus)
 
     --[MOVE_STATE.ON_FREEZE]			= "定身",
     --[MOVE_STATE.ON_ENTRAP]			= "定身",锁足
- 
-	if bcheckstate then
-        if szStatus == "锁足" then
-            if dummy.nMoveState == MOVE_STATE.ON_ENTRAP then
+     if dummy then
+        if bcheckstate then
+            if szStatus == "锁足" then
+                if dummy.nMoveState == MOVE_STATE.ON_ENTRAP then
+                    return true
+                end
+            elseif szStatus == "定身" then
+                if dummy.nMoveState == MOVE_STATE.ON_FREEZE then
+                    return true
+                end
+            elseif szStatus == g_tStrings.tPlayerMoveState[dummy.nMoveState] then
                 return true
             end
-        elseif szStatus == "定身" then
-            if dummy.nMoveState == MOVE_STATE.ON_FREEZE then
+        else
+            if szStatus == "锁足" then
+                if dummy.nMoveState ~= MOVE_STATE.ON_ENTRAP then
+                    return true
+                end
+            elseif szStatus == "定身" then
+                if dummy.nMoveState ~= MOVE_STATE.ON_FREEZE then
+                    return true
+                end
+            elseif szStatus ~= g_tStrings.tPlayerMoveState[dummy.nMoveState] then
                 return true
             end
-        elseif szStatus == g_tStrings.tPlayerMoveState[dummy.nMoveState] then
-			return true
         end
-	else
-        if szStatus == "锁足" then
-            if dummy.nMoveState ~= MOVE_STATE.ON_ENTRAP then
-                return true
-            end
-        elseif szStatus == "定身" then
-            if dummy.nMoveState ~= MOVE_STATE.ON_FREEZE then
-                return true
-            end
-        elseif szStatus ~= g_tStrings.tPlayerMoveState[dummy.nMoveState] then
-			return true
-		end
-	end
+     end
 
 	return false
 
@@ -1560,9 +1575,15 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 
 		-- 栈级下降, 则在下降后计算结果, 并且计算原有栈级上的结果
 		elseif ch == ")" then
-			local bResult = CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))
-			nCurrentStackLevel = nCurrentStackLevel - 1
-			CalculateStackResult(bResult)
+            local bResult
+            if szCurrentWord == "" then
+                bResult = tStackDataTable[nCurrentStackLevel][1]
+
+            else
+                bResult = CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))
+            end
+            nCurrentStackLevel = nCurrentStackLevel - 1
+            CalculateStackResult(bResult)
 
 		-- 获得一个新的 Rule, 之后的计算都依靠这个Rule为依据
 		elseif ch == ":" then
@@ -1587,9 +1608,10 @@ function Martin_Macro.CalculateMacroConditionResult(szMsg)
 		elseif ch == "," or ch == "，" then
             CalculateStackResult(Martin_Macro.CheckMacroCondition(szRule, szCurrentWord))
             szRule = szCurrentWord
-            --tStackDataTable[nCurrentStackLevel][2] = "+"
+            tStackDataTable[nCurrentStackLevel][2] = "+"
             tStackDataTable[nCurrentStackLevel][3] = szRule
-			if tStackDataTable[nCurrentStackLevel][1] == false then
+
+			if nCurrentStackLevel == 1 and tStackDataTable[nCurrentStackLevel][1] == false then
                 return tStackDataTable[nCurrentStackLevel][1]
             end
 
@@ -1677,12 +1699,21 @@ function Martin_Macro.SkillSelf(nSkillID, nSkillLv)
 
 end
 
+--精美面对目标,并且释放情缘
+--function Martin_Macro.FaceToTargetAndSkill(nSkillID, nSkillLv)
+    --local meface = Martin_Macro.CheckFace("face","<","20")
+    --if meface == false then
+        --Martin_Macro.FaceToTarget()
+        --meface = Martin_Macro.CheckFace("face","<","20")
+    --end
+    --OnUseSkill(nSkillID,nSkillLv)
+--end
 
 --宏语句解析
 local aCommand = {}
 
 --注册宏命令 如 cast
-local function AppendCommand(key, fn)
+function  Martin_Macro.AppendCommand(key, fn)
 	key = StringLowerW(key)
 	aCommand["/"..key] = fn
 end
@@ -1749,7 +1780,7 @@ local function GetCondition(szContent)
 		--szSkill = szContent
 	--end
     for k in szContent:gmatch("%b[]") do
-        if k:find("self") then
+        if k:find("self") or k:find("精准面向目标") then
             szAddonCondition = k:sub(2,-2)
         else
            szCondition = k:sub(2,-2)
@@ -1766,7 +1797,6 @@ end
 local function Cast(szContent)
 
 	local szCondition, szSkill, szAddonCondition = GetCondition(szContent)  --解析判断条件, 技能名称
-
 	if Martin_Macro.CalculateMacroConditionResult(szCondition) then
 		while string.sub(szSkill, 1, 1) == " " do
 			szSkill = string.sub(szSkill, 2, -1)
@@ -1793,6 +1823,8 @@ local function Cast(szContent)
             Camera_EnableControl(CONTROL_JUMP, true)
         elseif szSkill == "走向目标" then
             Martin_Macro.Follow()
+        elseif szSkill == "面向目标" then
+            Martin_Macro.FaceToTarget()
         elseif szSkill == "跟随目标" then
             local player = GetClientPlayer()
             local dwType, dwID = player.GetTarget()
@@ -1804,6 +1836,8 @@ local function Cast(szContent)
             if nSkillID ~= 2603 then
                 if szAddonCondition == "self" then
                     Martin_Macro.SkillSelf(nSkillID, nSkillLv)
+                --elseif szAddonCondition == "精准面向目标" then
+                    --Martin_Macro.FaceToTargetAndSkill(nSkillID, nSkillLv)
                 else
                     --醉舞九天  凝神聚气 风来吴山  暴雨梨花针  玳弦急曲   笑醉狂   回血飘摇
                     if szSkill == "醉舞九天" or szSkill == "凝神聚气" or szSkill == "风来吴山" or szSkill == "暴雨梨花针" or szSkill == "玳弦急曲" or szSkill == "笑醉狂" or szSkill == "回血飘摇" then
@@ -1905,10 +1939,10 @@ local function ProcessCommand(szCmd, szLeft)
 
 end
 
-AppendCommand("cast", Cast)
-AppendCommand("end", End)
-AppendCommand("before", Before)
-AppendCommand("goto", Goto)
+Martin_Macro.AppendCommand("cast", Cast)
+Martin_Macro.AppendCommand("end", End)
+Martin_Macro.AppendCommand("before", Before)
+Martin_Macro.AppendCommand("goto", Goto)
 
 --开始
 function Martin_Macro.Run()

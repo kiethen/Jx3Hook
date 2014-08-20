@@ -184,42 +184,42 @@ BOOL CALLBACK MsgProc( HWND hwndDlg, UINT UMsg, WPARAM wParam, LPARAM lParam )
     return FALSE ;
 }
 
-unsigned int __stdcall ScriptRun(PVOID pM)  
-{
-    static BOOL bIsAn = FALSE;
-    while(g_IsWork) {
-        if (GetKeyState(g_start) < 0) {    //按下1键状态
-            if (g_hWgDlg != NULL &&  bIsAn == FALSE) {
-                ::SendMessage(g_hWgDlg, WM_RUN, NULL, NULL);
-                bIsAn = TRUE;
-            }
-        } else {
-            if (g_hWgDlg != NULL && bIsAn == TRUE) {
-                ::SendMessage(g_hWgDlg, WM_STOP, NULL, NULL);
-                bIsAn = FALSE;
-            }
-        }
-        Sleep(30);
-    }
-
-    return  0;
-}
-
-unsigned int __stdcall TuoMasi(PVOID pM)  
-{
-    while(g_IsWork) {
-        if (g_bIsFace) {
-            if (GetKeyState(g_start) < 0) {    //按下Q键状态
-                if (g_hWgDlg != NULL) {
-                    ::SendMessage(g_hWgDlg, WM_TMS, NULL, NULL);
-                }
-            }
-        }
-        Sleep(30);
-    }
-
-    return  0;
-}
+//unsigned int __stdcall ScriptRun(PVOID pM)  
+//{
+//    static BOOL bIsAn = FALSE;
+//    while(g_IsWork) {
+//        if (GetKeyState(g_start) < 0) {    //按下1键状态
+//            if (g_hWgDlg != NULL &&  bIsAn == FALSE) {
+//                ::SendMessage(g_hWgDlg, WM_RUN, NULL, NULL);
+//                bIsAn = TRUE;
+//            }
+//        } else {
+//            if (g_hWgDlg != NULL && bIsAn == TRUE) {
+//                ::SendMessage(g_hWgDlg, WM_STOP, NULL, NULL);
+//                bIsAn = FALSE;
+//            }
+//        }
+//        Sleep(30);
+//    }
+//
+//    return  0;
+//}
+//
+//unsigned int __stdcall TuoMasi(PVOID pM)  
+//{
+//    while(g_IsWork) {
+//        if (g_bIsFace) {
+//            if (GetKeyState(g_start) < 0) {    //按下Q键状态
+//                if (g_hWgDlg != NULL) {
+//                    ::SendMessage(g_hWgDlg, WM_TMS, NULL, NULL);
+//                }
+//            }
+//        }
+//        Sleep(30);
+//    }
+//
+//    return  0;
+//}
 
 LRESULT CALLBACK GameProc(
     int code,       // hook code
@@ -231,8 +231,8 @@ LRESULT CALLBACK GameProc(
         if (GetKeyState(VK_HOME) < 0) {    //按下HOME键	
             if (g_hWgDlg == NULL) {
                 g_hWgDlg = CreateDialog(g_hModule, TEXT("MSG"), NULL, MsgProc);
-                g_h[0] = (HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL);
-                g_h[1] = (HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL);
+                //g_h[0] = (HANDLE)_beginthreadex(NULL, 0, ScriptRun, NULL, 0, NULL);
+                //g_h[1] = (HANDLE)_beginthreadex(NULL, 0, TuoMasi, NULL, 0, NULL);
             }
         }
     }
